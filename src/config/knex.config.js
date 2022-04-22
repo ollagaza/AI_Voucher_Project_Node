@@ -3,9 +3,10 @@ export default {
     client: 'mysql',
     connection: {
       host: '127.0.0.1',
-      database: 'datamanager',
+      port: 3307,
+      database: 'ai_voucher',
       user: 'root',
-      password: '1234',
+      password: '1111',
       timezone: 'UTC'
     },
     pool: {
@@ -20,7 +21,8 @@ export default {
     client: 'mysql',
     connection: {
       host: '127.0.0.1',
-      database: 'datamanager',
+      port: 3307,
+      database: 'ai_voucher',
       user: 'root',
       password: '1234',
       timezone: 'UTC'
@@ -38,7 +40,8 @@ export default {
     client: 'mysql',
     connection: {
       host: '127.0.0.1',
-      database: 'datamanager',
+      port: 3307,
+      database: 'ai_voucher',
       user: 'root',
       password: '1234',
       timezone: 'UTC'

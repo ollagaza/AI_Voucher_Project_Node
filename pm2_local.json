@@ -1,13 +1,13 @@
 {
   "apps": [
     {
-      "name": "jiin",
+      "name": "surgproject",
       "script": "dist/index.js",
       "watch": false,
       "env": {
         "NODE_ENV": "development",
         "PORT": 3600,
-        "LOG_PATH": "/home/june/web/jiin/jnode/logs"
+        "LOG_PATH": "/home/surgproject/logs"
       },
       "exec_mode": "fork",
       "instances": 1,

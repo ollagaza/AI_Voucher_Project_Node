@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(express.static(path.join(__dirname, '../public')))
 // Routes
-app.use('/apid1', routes)
+app.use('/api', routes)
 
 app.use((req, res, next) => {
   logger.e(req, '요청하신 API Endpoint가 존재하지 않습니다.')
