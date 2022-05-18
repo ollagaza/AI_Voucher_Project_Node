@@ -46,8 +46,38 @@ const ServiceConfigClass = class {
     return this.service_config_map[key]
   }
 
+  isVacs = () => {
+    let is_vacs = this.service_config_map['is_vacs'] ? this.service_config_map['is_vacs'] : 'n'
+    return is_vacs.toLowerCase() === 'y'
+  }
+
+  isVacsUseMachineId = () => {
+    const use_machine_id = this.service_config_map['vacs_use_machine_id'] ? this.service_config_map['vacs_use_machine_id'] : 'n'
+    return use_machine_id.toLowerCase() === 'y'
+  }
+
   supporterEmailList = () => {
     return this.supporter_email_list
+  }
+
+  getServiceUrl = () => {
+    return this.service_config_map.service_url
+  }
+
+  getMediaRoot = () => {
+    return this.service_config_map['media_root']
+  }
+
+  getVideoRoot = () => {
+    return this.service_config_map['video_root'] ? this.service_config_map['video_root'] : this.service_config_map['media_root']
+  }
+
+  getStorageServerRoot = () => {
+    return this.service_config_map['storage_server_root']
+  }
+
+  getStorageServerVideoRoot = () => {
+    return this.service_config_map['storage_server_video_root'] ? this.service_config_map['storage_server_video_root'] : this.service_config_map['storage_server_root']
   }
 }
 

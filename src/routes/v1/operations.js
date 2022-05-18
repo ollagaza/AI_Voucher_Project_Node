@@ -13,30 +13,34 @@ import OperationMediaService from '../../service/operation/OperationMediaService
 import OperationFileService from '../../service/operation/OperationFileService'
 import OperationStorageModel from '../../database/mysql/operation/OperationStorageModel'
 import { OperationMetadataModel } from '../../database/mongodb/OperationMetadata'
+import MemberService from "../../service/member/MemberService";
 
 const routes = Router()
 
 routes.get('/', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { group_seq, group_grade_number, group_member_info, is_group_admin, member_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
-  const operation_info_page = await OperationService.getOperationListByRequest(DBMySQL, group_seq, member_seq, group_member_info, group_grade_number, is_group_admin, req)
+  // console.log('operations')
+  // console.log(req.query.is_admin)
 
+  const { token_info, member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
+  const operation_info_page = await OperationService.getOperationListByRequest(DBMySQL, 3, member_seq, req, req.query.is_admin)
   const output = new StdObject()
   output.adds(operation_info_page)
   res.json(output)
 }))
 
-// 리스트 by djyu
-routes.get('/list', Wrap(async (req, res) => {
-  // const { group_seq, group_grade_number, group_member_info, is_group_admin, member_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
-  const operation_info_page = await OperationService.getOperationListByRequest2(DBMySQL, 3, 2, '','','', req)
+// // 리스트 by djyu
+// routes.get('/list', Wrap(async (req, res) => {
+//   // const { group_seq, group_grade_number, group_member_info, is_group_admin, member_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+//   const operation_info_page = await OperationService.getOperationListByRequest2(DBMySQL, 3, 2, '','','', req)
+//
+//   const output = new StdObject()
+//   output.adds(operation_info_page)
+//   res.json(output)
+// }))
 
-  const output = new StdObject()
-  output.adds(operation_info_page)
-  res.json(output)
-}))
 
 routes.get('/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  // const { token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
   const operation_seq = req.params.operation_seq
 
   const operation_info = await OperationService.getOperationInfo(DBMySQL, operation_seq, token_info, true, true)
@@ -46,27 +50,33 @@ routes.get('/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(
   res.json(output)
 }))
 
-routes.post('/', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { member_info, group_member_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
-  const output = await OperationService.createOperation(DBMySQL, member_info, group_member_info, req.body, null)
-  res.json(output)
-}))
-
 // 수술영상 등록-내용 저장 부분 by djyu
-routes.post('/reg', Wrap(async (req, res) => {
+routes.post('/', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   // const { member_info, group_member_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
-  const output = await OperationService.createOperationReg(DBMySQL, req.body, null)
+
+  const member_info = await MemberService.getMemberInfo(DBMySQL, req.body.member_seq)
+  // const operation_seq = req.params.operation_seq
+  const output = await OperationService.createOperation(DBMySQL, member_info, req.body, null)
   res.json(output)
 }))
 
-routes.post('/copy/list', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { group_seq, member_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
-  OperationService.copyOperation(group_seq, member_info, req.body)
-  res.json(new StdObject())
-}))
+// routes.post('/reg', Wrap(async (req, res) => {
+//   // const { member_info, group_member_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+//
+//   const member_info = await MemberService.getMemberInfo(DBMySQL, req.body.member_seq)
+//   // const operation_seq = req.params.operation_seq
+//   const output = await OperationService.createOperationReg(DBMySQL, member_info, req.body, null)
+//   res.json(output)
+// }))
+
+// routes.post('/copy/list', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
+//   // const { group_seq, member_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+//   OperationService.copyOperation(group_seq, member_info, req.body)
+//   res.json(new StdObject())
+// }))
 
 routes.post('/copy/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { group_seq, member_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  // const { group_seq, member_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
   const operation_seq = req.params.operation_seq
   const copy_result = await OperationService.copyOperationOne(member_info, operation_seq, group_seq, req.body)
   let output
@@ -85,7 +95,7 @@ routes.post('/copy/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER),
 
 routes.put('/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   req.accepts('application/json')
-  const { token_info, member_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  // const { token_info, member_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
   const operation_seq = req.params.operation_seq
 
   const operation_info = await OperationService.getOperationInfo(DBMySQL, operation_seq, token_info)
@@ -95,7 +105,7 @@ routes.put('/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(
 }))
 
 routes.delete('/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  // const { token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
   const operation_seq = req.params.operation_seq
   const delete_result = await OperationService.deleteOperation(DBMySQL, token_info, operation_seq)
   const output = new StdObject()
@@ -105,8 +115,8 @@ routes.delete('/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wr
 }))
 
 routes.delete('/delete_operations', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
-  OperationService.deleteOperationByList(group_seq, req.body.operations)
+  // const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  OperationService.deleteOperationByList(req.body.operations)
   res.json(new StdObject())
 }))
 
@@ -229,28 +239,39 @@ routes.delete('/:operation_seq(\\d+)/phase/:phase_id', Auth.isAuthenticated(Role
 }))
 
 routes.post('/:operation_seq(\\d+)/request/analysis', Auth.isAuthenticated(Role.DEFAULT), Wrap(async (req, res) => {
-  const { member_info, group_member_info, token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  // const { member_info, group_member_info, token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  const { token_info, member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
+  const member_info = await MemberService.getMemberInfo(DBMySQL, member_seq)
   const operation_seq = req.params.operation_seq
-  OperationService.requestAnalysis(DBMySQL, token_info, operation_seq, group_member_info, member_info)
+
+  OperationService.requestAnalysis(DBMySQL, token_info, operation_seq, member_info)
 
   res.json(new StdObject())
 }))
 
 // by djyu
-routes.post('/:operation_seq(\\d+)/request/analysis2', Wrap(async (req, res) => {
-  const operation_seq = req.params.operation_seq
-  OperationService.requestAnalysis2(DBMySQL,  operation_seq)
-
-  res.json(new StdObject())
-}))
+// routes.post('/:operation_seq(\\d+)/request/analysis2', Auth.isAuthenticated(Role.DEFAULT), Wrap(async (req, res) => {
+//   // const { member_info, group_member_info, token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+//   const { token_info, member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
+//   const member_info = await MemberService.getMemberInfo(DBMySQL, member_seq)
+//   const operation_seq = req.params.operation_seq
+//   OperationService.requestAnalysis2(DBMySQL, token_info, operation_seq, member_info)
+//
+//   res.json(new StdObject())
+// }))
 
 routes.put('/trash', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { group_seq, member_seq, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  const { member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
+  // const { group_seq, member_seq, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
   req.accepts('application/json')
   const seq_list = req.body.seq_list
+  const is_admin = req.body.is_admin
+
+  // console.log('/trash')
+  // console.log(is_admin)
 
   // updateStatusTrash = async (database, group_seq, operation_seq_list, is_delete = false, is_delete_by_admin, delete_member_seq)
-  const result = await OperationService.updateStatusTrash(DBMySQL, group_seq, req.body, false, is_group_admin, member_seq)
+  const result = await OperationService.updateStatusTrash(DBMySQL, req.body, false, is_admin, member_seq)
 
   const output = new StdObject()
   output.add('result', result)
@@ -259,12 +280,13 @@ routes.put('/trash', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res
 }))
 
 routes.delete('/trash', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { group_seq, member_seq, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  const { member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
   req.accepts('application/json')
   const seq_list = req.body.seq_list
+  const is_admin = req.body.is_admin
   log.d(req, seq_list)
 
-  const result = await OperationService.updateStatusTrash(DBMySQL, group_seq, req.body, true, is_group_admin, member_seq)
+  const result = await OperationService.updateStatusTrash(DBMySQL, req.body, true, is_admin, member_seq)
 
   const output = new StdObject()
   output.add('result', result)
@@ -272,25 +294,25 @@ routes.delete('/trash', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, 
   res.json(output)
 }))
 
-routes.put('/:operation_seq(\\d+)/favorite', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const operation_seq = req.params.operation_seq
-
-  const result = await OperationService.updateStatusFavorite(DBMySQL, operation_seq, false)
-
-  const output = new StdObject()
-  output.add('result', result)
-  res.json(output)
-}))
-
-routes.delete('/:operation_seq(\\d+)/favorite', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const operation_seq = req.params.operation_seq
-
-  const result = await OperationService.updateStatusFavorite(DBMySQL, operation_seq, true)
-
-  const output = new StdObject()
-  output.add('result', result)
-  res.json(output)
-}))
+// routes.put('/:operation_seq(\\d+)/favorite', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
+//   const operation_seq = req.params.operation_seq
+//
+//   const result = await OperationService.updateStatusFavorite(DBMySQL, operation_seq, false)
+//
+//   const output = new StdObject()
+//   output.add('result', result)
+//   res.json(output)
+// }))
+//
+// routes.delete('/:operation_seq(\\d+)/favorite', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
+//   const operation_seq = req.params.operation_seq
+//
+//   const result = await OperationService.updateStatusFavorite(DBMySQL, operation_seq, true)
+//
+//   const output = new StdObject()
+//   output.add('result', result)
+//   res.json(output)
+// }))
 
 routes.post('/verify/operation_code', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   const token_info = req.token_info
@@ -338,15 +360,15 @@ routes.put('/:operation_seq(\\d+)/thumbnail', Auth.isAuthenticated(Role.LOGIN_US
 }))
 
 // 대표 썸네일 등록 by djyu
-routes.put('/:operation_seq(\\d+)/thumbnail2', Wrap(async (req, res) => {
-  const operation_seq = req.params.operation_seq
-  const thumbnail_url = await OperationDataService.setThumbnailImage(operation_seq, req, res)
-
-  const output = new StdObject()
-  output.add('thumbnail_url', thumbnail_url)
-
-  res.json(output)
-}))
+// routes.put('/:operation_seq(\\d+)/thumbnail2', Wrap(async (req, res) => {
+//   const operation_seq = req.params.operation_seq
+//   const thumbnail_url = await OperationDataService.setThumbnailImage(operation_seq, req, res)
+//
+//   const output = new StdObject()
+//   output.add('thumbnail_url', thumbnail_url)
+//
+//   res.json(output)
+// }))
 
 routes.post('/:operation_seq(\\d+)/files/:file_type', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   const token_info = req.token_info
@@ -362,21 +384,21 @@ routes.post('/:operation_seq(\\d+)/files/:file_type', Auth.isAuthenticated(Role.
 }))
 
 // 영상 업로드 by djyu
-routes.post('/:operation_seq(\\d+)/files2/:file_type', Wrap(async (req, res) => {
-  const token_info = req.token_info
-  const operation_seq = req.params.operation_seq
-  const operation_info = await OperationService.getOperationInfo2(DBMySQL, operation_seq, token_info)
-  const file_type = req.params.file_type
-  const upload_seq = await OperationService.uploadOperationFile(DBMySQL, req, res, operation_info, file_type)
-
-  const output = new StdObject()
-  output.add('upload_seq', upload_seq)
-
-  res.json(output)
-}))
+// routes.post('/:operation_seq(\\d+)/files2/:file_type', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
+//   const token_info = req.token_info
+//   const operation_seq = req.params.operation_seq
+//   const operation_info = await OperationService.getOperationInfo(DBMySQL, operation_seq, token_info)
+//   const file_type = req.params.file_type
+//   const upload_seq = await OperationService.uploadOperationFile(DBMySQL, req, res, operation_info, file_type)
+//
+//   const output = new StdObject()
+//   output.add('upload_seq', upload_seq)
+//
+//   res.json(output)
+// }))
 
 routes.put('/:operation_seq(\\d+)/files/upload/complete', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  const { token_info } = await OperationService.getBaseInfo(DBMySQL, req)
   const operation_seq = req.params.operation_seq
   const operation_info = await OperationService.getOperationInfo(DBMySQL, operation_seq, token_info)
   await OperationService.onUploadComplete(operation_info, req.body && req.body.on_create === true)
@@ -386,15 +408,15 @@ routes.put('/:operation_seq(\\d+)/files/upload/complete', Auth.isAuthenticated(R
 }))
 
 // 파일 업로드 완료 처리 by djyu
-routes.put('/:operation_seq(\\d+)/files2/upload/complete', Wrap(async (req, res) => {
-  // const { token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
-  const operation_seq = req.params.operation_seq
-  const operation_info = await OperationService.getOperationInfo2(DBMySQL, operation_seq, '')
-  await OperationService.onUploadComplete(operation_info, req.body && req.body.on_create === true)
-
-  const output = new StdObject()
-  res.json(output)
-}))
+// routes.put('/:operation_seq(\\d+)/files2/upload/complete', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
+//   const { token_info } = await OperationService.getBaseInfo(DBMySQL, req)
+//   const operation_seq = req.params.operation_seq
+//   const operation_info = await OperationService.getOperationInfo(DBMySQL, operation_seq, token_info)
+//   await OperationService.onUploadComplete(operation_info, req.body && req.body.on_create === true)
+//
+//   const output = new StdObject()
+//   res.json(output)
+// }))
 
 routes.delete('/:operation_seq(\\d+)/files/:file_type', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   const token_info = req.token_info
@@ -465,17 +487,18 @@ routes.get('/clips/:member_seq(\\d+)?', Auth.isAuthenticated(Role.DEFAULT), Wrap
 }))
 
 routes.get('/:operation_seq(\\d+)/active', Auth.isAuthenticated(Role.DEFAULT), Wrap(async (req, res) => {
-  const { group_seq, group_grade_number, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  // const { group_seq, group_grade_number, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
   const operation_seq = req.params.operation_seq
   const output = await OperationService.isOperationActive(operation_seq, group_seq, is_group_admin, group_grade_number)
   res.json(output)
 }))
 
 routes.get('/:operation_seq(\\d+)/able/restore', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { group_seq, group_grade_number, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  // const { group_seq, group_grade_number, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  const { member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
   const operation_seq = req.params.operation_seq
 
-  const is_able = await OperationService.isOperationAbleRestore(operation_seq, group_seq, group_grade_number, is_group_admin)
+  const is_able = await OperationService.isOperationAbleRestore(operation_seq, member_seq)
   const output = new StdObject()
   output.add('is_able', is_able)
 

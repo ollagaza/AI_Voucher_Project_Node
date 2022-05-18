@@ -1,0 +1,801 @@
+{
+  "analysis": {
+    "total_time": 600,
+    "total_frame": 15000,
+    "total_count": 188,
+    "fps": 25,
+    "type_analysis_map": {
+      "0x00000800": {
+        "code": "0x00000800",
+        "name": "Tool_GRASPER",
+        "total_frame": 2544,
+        "last_end_frame": 14629,
+        "uptime": 103.47999999999992,
+        "uptime_rate": 0.17246666666666652,
+        "appear_count": 27,
+        "appear_rate": 0.14361702127659576,
+        "timeline": [
+          {
+            "start_time": 2.6,
+            "end_time": 7.04
+          },
+          {
+            "start_time": 67.16,
+            "end_time": 69.96
+          },
+          {
+            "start_time": 131.4,
+            "end_time": 135.68
+          },
+          {
+            "start_time": 142.96,
+            "end_time": 143.08
+          },
+          {
+            "start_time": 207.32,
+            "end_time": 219.36
+          },
+          {
+            "start_time": 225.28,
+            "end_time": 225.4
+          },
+          {
+            "start_time": 234.88,
+            "end_time": 235
+          },
+          {
+            "start_time": 250.32,
+            "end_time": 250.44
+          },
+          {
+            "start_time": 270.24,
+            "end_time": 275.08
+          },
+          {
+            "start_time": 277.68,
+            "end_time": 290.28
+          },
+          {
+            "start_time": 296.52,
+            "end_time": 296.64
+          },
+          {
+            "start_time": 301.76,
+            "end_time": 310.96
+          },
+          {
+            "start_time": 311.76,
+            "end_time": 319.68
+          },
+          {
+            "start_time": 348.12,
+            "end_time": 352.04
+          },
+          {
+            "start_time": 359.6,
+            "end_time": 359.72
+          },
+          {
+            "start_time": 371.28,
+            "end_time": 371.4
+          },
+          {
+            "start_time": 376.2,
+            "end_time": 377.64
+          },
+          {
+            "start_time": 386.88,
+            "end_time": 387
+          },
+          {
+            "start_time": 407.52,
+            "end_time": 410.64
+          },
+          {
+            "start_time": 413.44,
+            "end_time": 421.12
+          },
+          {
+            "start_time": 422.36,
+            "end_time": 433.36
+          },
+          {
+            "start_time": 439.92,
+            "end_time": 440.04
+          },
+          {
+            "start_time": 458.16,
+            "end_time": 466.32
+          },
+          {
+            "start_time": 488.48,
+            "end_time": 488.6
+          },
+          {
+            "start_time": 489.08,
+            "end_time": 494.32
+          },
+          {
+            "start_time": 538.44,
+            "end_time": 538.56
+          },
+          {
+            "start_time": 581.68,
+            "end_time": 585.16
+          }
+        ]
+      },
+      "0x00000002": {
+        "code": "0x00000002",
+        "name": "Intracoporal",
+        "total_frame": 948,
+        "last_end_frame": 14984,
+        "uptime": 38.32000000000001,
+        "uptime_rate": 0.06386666666666668,
+        "appear_count": 10,
+        "appear_rate": 0.05319148936170213,
+        "timeline": [
+          {
+            "start_time": 0.12,
+            "end_time": 2.6
+          },
+          {
+            "start_time": 110.84,
+            "end_time": 114
+          },
+          {
+            "start_time": 371.4,
+            "end_time": 376.2
+          },
+          {
+            "start_time": 387,
+            "end_time": 387.72
+          },
+          {
+            "start_time": 395.16,
+            "end_time": 397.04
+          },
+          {
+            "start_time": 440.04,
+            "end_time": 456.28
+          },
+          {
+            "start_time": 477.44,
+            "end_time": 481.16
+          },
+          {
+            "start_time": 485.56,
+            "end_time": 486.04
+          },
+          {
+            "start_time": 488.6,
+            "end_time": 489.08
+          },
+          {
+            "start_time": 595,
+            "end_time": 599.36
+          }
+        ]
+      },
+      "0x00000100": {
+        "code": "0x00000100",
+        "name": "Tool_ROD",
+        "total_frame": 7547,
+        "last_end_frame": 14984,
+        "uptime": 304.4800000000002,
+        "uptime_rate": 0.507466666666667,
+        "appear_count": 57,
+        "appear_rate": 0.30319148936170215,
+        "timeline": [
+          {
+            "start_time": 0.12,
+            "end_time": 2.6
+          },
+          {
+            "start_time": 7.04,
+            "end_time": 10.16
+          },
+          {
+            "start_time": 18.8,
+            "end_time": 34.64
+          },
+          {
+            "start_time": 38.28,
+            "end_time": 43.36
+          },
+          {
+            "start_time": 50.28,
+            "end_time": 62.44
+          },
+          {
+            "start_time": 63.44,
+            "end_time": 64.12
+          },
+          {
+            "start_time": 69.96,
+            "end_time": 75.48
+          },
+          {
+            "start_time": 81.24,
+            "end_time": 86.76
+          },
+          {
+            "start_time": 91.96,
+            "end_time": 93.88
+          },
+          {
+            "start_time": 100.12,
+            "end_time": 105.84
+          },
+          {
+            "start_time": 110.84,
+            "end_time": 114
+          },
+          {
+            "start_time": 117.04,
+            "end_time": 127.68
+          },
+          {
+            "start_time": 127.8,
+            "end_time": 128.52
+          },
+          {
+            "start_time": 135.68,
+            "end_time": 142.96
+          },
+          {
+            "start_time": 143.08,
+            "end_time": 146.2
+          },
+          {
+            "start_time": 150.04,
+            "end_time": 154.24
+          },
+          {
+            "start_time": 160.28,
+            "end_time": 162.28
+          },
+          {
+            "start_time": 168,
+            "end_time": 169.2
+          },
+          {
+            "start_time": 175.36,
+            "end_time": 184.84
+          },
+          {
+            "start_time": 184.96,
+            "end_time": 185.68
+          },
+          {
+            "start_time": 193.48,
+            "end_time": 194.72
+          },
+          {
+            "start_time": 204.92,
+            "end_time": 207.32
+          },
+          {
+            "start_time": 219.36,
+            "end_time": 225.28
+          },
+          {
+            "start_time": 225.4,
+            "end_time": 234.88
+          },
+          {
+            "start_time": 235,
+            "end_time": 250.32
+          },
+          {
+            "start_time": 250.44,
+            "end_time": 270.24
+          },
+          {
+            "start_time": 275.08,
+            "end_time": 277.68
+          },
+          {
+            "start_time": 290.28,
+            "end_time": 296.52
+          },
+          {
+            "start_time": 296.64,
+            "end_time": 301.76
+          },
+          {
+            "start_time": 311.08,
+            "end_time": 311.76
+          },
+          {
+            "start_time": 319.68,
+            "end_time": 320.4
+          },
+          {
+            "start_time": 328.24,
+            "end_time": 336.68
+          },
+          {
+            "start_time": 336.8,
+            "end_time": 339.64
+          },
+          {
+            "start_time": 342.92,
+            "end_time": 348.12
+          },
+          {
+            "start_time": 352.04,
+            "end_time": 359.6
+          },
+          {
+            "start_time": 359.72,
+            "end_time": 370.76
+          },
+          {
+            "start_time": 371.4,
+            "end_time": 376.2
+          },
+          {
+            "start_time": 377.64,
+            "end_time": 386.12
+          },
+          {
+            "start_time": 387,
+            "end_time": 387.72
+          },
+          {
+            "start_time": 395.16,
+            "end_time": 397.04
+          },
+          {
+            "start_time": 402.84,
+            "end_time": 407.52
+          },
+          {
+            "start_time": 410.64,
+            "end_time": 413.44
+          },
+          {
+            "start_time": 421.12,
+            "end_time": 422.36
+          },
+          {
+            "start_time": 433.48,
+            "end_time": 435.08
+          },
+          {
+            "start_time": 440.04,
+            "end_time": 456.28
+          },
+          {
+            "start_time": 456.4,
+            "end_time": 458.16
+          },
+          {
+            "start_time": 466.32,
+            "end_time": 476.72
+          },
+          {
+            "start_time": 485.56,
+            "end_time": 486.04
+          },
+          {
+            "start_time": 494.32,
+            "end_time": 496.76
+          },
+          {
+            "start_time": 504.72,
+            "end_time": 508.84
+          },
+          {
+            "start_time": 513.04,
+            "end_time": 519.28
+          },
+          {
+            "start_time": 519.4,
+            "end_time": 520
+          },
+          {
+            "start_time": 530.28,
+            "end_time": 531.64
+          },
+          {
+            "start_time": 538.56,
+            "end_time": 541.24
+          },
+          {
+            "start_time": 548.12,
+            "end_time": 562.84
+          },
+          {
+            "start_time": 572.8,
+            "end_time": 580.52
+          },
+          {
+            "start_time": 595,
+            "end_time": 599.36
+          }
+        ]
+      },
+      "0x00000004": {
+        "code": "0x00000004",
+        "name": "Person Detection",
+        "total_frame": 229,
+        "last_end_frame": 14859,
+        "uptime": 9.200000000000045,
+        "uptime_rate": 0.015333333333333409,
+        "appear_count": 1,
+        "appear_rate": 0.005319148936170213,
+        "timeline": [
+          {
+            "start_time": 585.16,
+            "end_time": 594.36
+          }
+        ]
+      },
+      "0x02000000": {
+        "code": "0x02000000",
+        "name": "Brightness Levels",
+        "total_frame": 14811,
+        "last_end_frame": 15001,
+        "uptime": 599.88,
+        "uptime_rate": 0.9998,
+        "appear_count": 1,
+        "appear_rate": 0.005319148936170213,
+        "timeline": [
+          {
+            "start_time": 0.12,
+            "end_time": 600
+          }
+        ]
+      },
+      "0x00000400": {
+        "code": "0x00000400",
+        "name": "Tool_HOOK",
+        "total_frame": 2863,
+        "last_end_frame": 12154,
+        "uptime": 116.44000000000001,
+        "uptime_rate": 0.1940666666666667,
+        "appear_count": 32,
+        "appear_rate": 0.1702127659574468,
+        "timeline": [
+          {
+            "start_time": 10.16,
+            "end_time": 18.8
+          },
+          {
+            "start_time": 34.64,
+            "end_time": 38.28
+          },
+          {
+            "start_time": 43.36,
+            "end_time": 50.28
+          },
+          {
+            "start_time": 62.44,
+            "end_time": 63.44
+          },
+          {
+            "start_time": 64.12,
+            "end_time": 67.16
+          },
+          {
+            "start_time": 68.52,
+            "end_time": 69.96
+          },
+          {
+            "start_time": 75.48,
+            "end_time": 81.24
+          },
+          {
+            "start_time": 86.76,
+            "end_time": 91.96
+          },
+          {
+            "start_time": 93.88,
+            "end_time": 100.12
+          },
+          {
+            "start_time": 114,
+            "end_time": 117.04
+          },
+          {
+            "start_time": 127.68,
+            "end_time": 127.8
+          },
+          {
+            "start_time": 128.52,
+            "end_time": 135.68
+          },
+          {
+            "start_time": 146.2,
+            "end_time": 150.04
+          },
+          {
+            "start_time": 160.16,
+            "end_time": 160.28
+          },
+          {
+            "start_time": 162.28,
+            "end_time": 168
+          },
+          {
+            "start_time": 169.2,
+            "end_time": 175.36
+          },
+          {
+            "start_time": 184.84,
+            "end_time": 184.96
+          },
+          {
+            "start_time": 185.68,
+            "end_time": 193.48
+          },
+          {
+            "start_time": 194.72,
+            "end_time": 204.92
+          },
+          {
+            "start_time": 250.32,
+            "end_time": 250.44
+          },
+          {
+            "start_time": 296.52,
+            "end_time": 296.64
+          },
+          {
+            "start_time": 310.96,
+            "end_time": 311.08
+          },
+          {
+            "start_time": 320.4,
+            "end_time": 328.24
+          },
+          {
+            "start_time": 336.68,
+            "end_time": 336.8
+          },
+          {
+            "start_time": 339.64,
+            "end_time": 342.92
+          },
+          {
+            "start_time": 395.04,
+            "end_time": 395.16
+          },
+          {
+            "start_time": 397.04,
+            "end_time": 402.84
+          },
+          {
+            "start_time": 433.36,
+            "end_time": 433.48
+          },
+          {
+            "start_time": 435.08,
+            "end_time": 439.44
+          },
+          {
+            "start_time": 456.28,
+            "end_time": 456.4
+          },
+          {
+            "start_time": 458.16,
+            "end_time": 466.2
+          },
+          {
+            "start_time": 486.04,
+            "end_time": 486.16
+          }
+        ]
+      },
+      "0x00000200": {
+        "code": "0x00000200",
+        "name": "Extracoporal",
+        "total_frame": 509,
+        "last_end_frame": 15001,
+        "uptime": 20.719999999999914,
+        "uptime_rate": 0.03453333333333319,
+        "appear_count": 10,
+        "appear_rate": 0.05319148936170213,
+        "timeline": [
+          {
+            "start_time": 105.84,
+            "end_time": 110.84
+          },
+          {
+            "start_time": 370.76,
+            "end_time": 371.28
+          },
+          {
+            "start_time": 386.24,
+            "end_time": 386.88
+          },
+          {
+            "start_time": 387.72,
+            "end_time": 395.04
+          },
+          {
+            "start_time": 439.44,
+            "end_time": 439.92
+          },
+          {
+            "start_time": 476.72,
+            "end_time": 477.44
+          },
+          {
+            "start_time": 481.28,
+            "end_time": 485.56
+          },
+          {
+            "start_time": 486.16,
+            "end_time": 486.64
+          },
+          {
+            "start_time": 594.36,
+            "end_time": 595
+          },
+          {
+            "start_time": 599.36,
+            "end_time": 600
+          }
+        ]
+      },
+      "0x00800000": {
+        "code": "0x00800000",
+        "name": "Tool_CLIPPER",
+        "total_frame": 34,
+        "last_end_frame": 9656,
+        "uptime": 1.4399999999999977,
+        "uptime_rate": 0.0023999999999999963,
+        "appear_count": 2,
+        "appear_rate": 0.010638297872340425,
+        "timeline": [
+          {
+            "start_time": 154.24,
+            "end_time": 155.56
+          },
+          {
+            "start_time": 386.12,
+            "end_time": 386.24
+          }
+        ]
+      },
+      "0x00004000": {
+        "code": "0x00004000",
+        "name": "SubtitleOccurrence",
+        "total_frame": 186,
+        "last_end_frame": 11473,
+        "uptime": 7.559999999999974,
+        "uptime_rate": 0.012599999999999957,
+        "appear_count": 3,
+        "appear_rate": 0.015957446808510637,
+        "timeline": [
+          {
+            "start_time": 155.56,
+            "end_time": 160.16
+          },
+          {
+            "start_time": 408.32,
+            "end_time": 410.52
+          },
+          {
+            "start_time": 458.16,
+            "end_time": 458.92
+          }
+        ]
+      },
+      "0x00000040": {
+        "code": "0x00000040",
+        "name": "Tool_SPECIMEN_BAG",
+        "total_frame": 1100,
+        "last_end_frame": 14542,
+        "uptime": 44.67999999999989,
+        "uptime_rate": 0.07446666666666649,
+        "appear_count": 10,
+        "appear_rate": 0.05319148936170213,
+        "timeline": [
+          {
+            "start_time": 481.16,
+            "end_time": 481.28
+          },
+          {
+            "start_time": 494.2,
+            "end_time": 494.32
+          },
+          {
+            "start_time": 496.76,
+            "end_time": 504.6
+          },
+          {
+            "start_time": 509.88,
+            "end_time": 513.04
+          },
+          {
+            "start_time": 519.28,
+            "end_time": 519.4
+          },
+          {
+            "start_time": 520,
+            "end_time": 530.16
+          },
+          {
+            "start_time": 531.64,
+            "end_time": 538.44
+          },
+          {
+            "start_time": 541.24,
+            "end_time": 548
+          },
+          {
+            "start_time": 564.36,
+            "end_time": 572.8
+          },
+          {
+            "start_time": 580.52,
+            "end_time": 581.68
+          }
+        ]
+      },
+      "0x00000080": {
+        "code": "0x00000080",
+        "name": "Tool_BIPOLAR",
+        "total_frame": 45,
+        "last_end_frame": 12212,
+        "uptime": 1.8400000000000318,
+        "uptime_rate": 0.0030666666666667197,
+        "appear_count": 1,
+        "appear_rate": 0.005319148936170213,
+        "timeline": [
+          {
+            "start_time": 486.64,
+            "end_time": 488.48
+          }
+        ]
+      },
+      "0x00000020": {
+        "code": "0x00000020",
+        "name": "Tool_SCISSORS",
+        "total_frame": 236,
+        "last_end_frame": 14109,
+        "uptime": 9.680000000000007,
+        "uptime_rate": 0.016133333333333343,
+        "appear_count": 5,
+        "appear_rate": 0.026595744680851064,
+        "timeline": [
+          {
+            "start_time": 504.6,
+            "end_time": 504.72
+          },
+          {
+            "start_time": 508.84,
+            "end_time": 509.88
+          },
+          {
+            "start_time": 530.16,
+            "end_time": 530.28
+          },
+          {
+            "start_time": 541.24,
+            "end_time": 548.12
+          },
+          {
+            "start_time": 562.84,
+            "end_time": 564.36
+          }
+        ]
+      },
+      "0x00000001": {
+        "code": "0x00000001",
+        "name": "Bleeding",
+        "total_frame": 0,
+        "last_end_frame": 0,
+        "uptime": 0,
+        "uptime_rate": 0,
+        "appear_count": 0,
+        "appear_rate": 0,
+        "timeline": []
+      }
+    }
+  }
+}

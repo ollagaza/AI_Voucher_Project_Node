@@ -23,9 +23,17 @@ export default class MemberModel extends MySQLModel {
     member_info.user_nickname = member_info.user_id;
     member_info.gender = 1;
     member_info.foreigner = 'N';
-    member_info.used_admin = 'N';
-    member_info.used = 1;
     member_info.user_type = 'P';
+
+    if(member_info.storage_name === '') {
+      member_info.used_admin = 'N';
+      member_info.used = 0;
+    } else {
+      member_info.storage_name = member_info.storage_name;
+      member_info.etc = member_info.etc;
+      member_info.used_admin = member_info.used_admin;
+      member_info.used = member_info.used;
+    }
 
     // logger.debug(member_info)
     try{
@@ -54,10 +62,20 @@ export default class MemberModel extends MySQLModel {
     // const member = member_info.toJSON()
     // logger.debug(member_info)
     const update_param = {};
+    if(member_info.password !== '') {
+      update_param.password = this.encryptPassword(member_info.password)
+    }
+    update_param.user_name = member_info.user_name;
     update_param.birth_day = member_info.birth_day;
     update_param.cellphone = member_info.cellphone;
-    update_param.tel = member_info.tel;
+    // update_param.tel = member_info.tel;
     update_param.email_address = member_info.email_address;
+    if(member_info.storage_name !== '') {
+      update_param.storage_name = member_info.storage_name;
+      update_param.etc = member_info.etc;
+      update_param.used_admin = member_info.used_admin;
+      update_param.used = member_info.used;
+    }
     try{
       const member_info_seq = await this.update({ seq: member_seq }, update_param)
       member_info.error = 0;
@@ -75,7 +93,7 @@ export default class MemberModel extends MySQLModel {
     try {
       const result = await this.database
         .from(this.table_name)
-        .whereIn('seq', arr_member_seq)
+        .whereIn('user_id', arr_member_seq)
         .update(params);
       // logger.debug(result);
     }catch (e) {
@@ -145,6 +163,8 @@ export default class MemberModel extends MySQLModel {
 
   getMemberInfo = async (member_seq) => {
     const query_result = await this.findOne({ seq: member_seq })
+    console.log('getMemberInfo')
+    console.log(query_result)
     if (query_result && query_result.regist_date) {
       query_result.regist_date = Util.dateFormat(query_result.regist_date.getTime())
     }
@@ -197,4 +217,22 @@ export default class MemberModel extends MySQLModel {
     return result;
   }
 
+  getMemberList = async (options, search_keyword) => {
+    const page = options.page
+    const limit = options.limit
+
+    const oKnex = this.database.select('*').from(this.table_name)
+
+    if (search_keyword) {
+      oKnex.where('user_name', 'like', `%${search_keyword}%`)
+      oKnex.orWhere('user_id', 'like', `%${search_keyword}%`)
+    }
+    // const result = await oKnex
+    // if (result && result.regist_date) {
+    //   result.regist_date = Util.dateFormat(result.regist_date.getTime())
+    // }
+    return this.queryPaginated(oKnex, limit, page)
+    // return new MemberInfo(result, this.private_fields)
+    // return new JsonWrapper(result, this.private_fields)
+  }
 }

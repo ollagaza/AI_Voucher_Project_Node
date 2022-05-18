@@ -1,6 +1,7 @@
 import StdObject from '../../wrapper/std-object'
 import DBMySQL from '../../database/knex-mysql'
 import MemberModel from '../../database/mysql/member/MemberModel'
+import MemberSubModel from '../../database/mysql/member/MemberSubModel'
 import FindPasswordModel from '../../database/mysql/member/FindPasswordModel'
 import Util from '../../utils/baseutil'
 import ServiceConfig from '../../service/service-config'
@@ -18,6 +19,13 @@ const MemberServiceClass = class {
       return new MemberModel(database)
     }
     return new MemberModel(DBMySQL)
+  }
+
+  getMemberSubModel = (database = null) => {
+    if (database) {
+      return new MemberSubModel(database)
+    }
+    return new MemberSubModel(DBMySQL)
   }
 
   getMemberInfoById = async (database, user_id) => {
@@ -66,11 +74,11 @@ const MemberServiceClass = class {
 
   getMemberInfoWithSub = async (database, member_seq, lang = 'kor') => {
     const member_info = await this.getMemberInfo(database, member_seq)
-    const member_sub_info = await this.getMemberSubInfo(database, member_seq, lang)
+    // const member_sub_info = await this.getMemberSubInfo(database, member_seq, lang)
 
     return {
       member_info,
-      member_sub_info
+      // member_sub_info
     }
   }
 
@@ -79,10 +87,47 @@ const MemberServiceClass = class {
     return member_info
   }
 
+  isActiveMember = (member_info) => {
+    if (!member_info || member_info.isEmpty() || !member_info.seq) {
+      return false
+    }
+    return Util.parseInt(member_info.used, 0) === 1
+  }
+
+  getMemberStateError = (member_info) => {
+    const output = new StdObject()
+    if (!this.isActiveMember(member_info)) {
+      output.error = -1
+      output.message = '등록된 회원이 아닙니다.'
+      output.httpStatusCode = 403
+    } else if (member_info.used === 0) {
+      output.error = -2
+      output.message = '회원가입 승인이 완료되지 않았습니다.'
+      output.httpStatusCode = 403
+    } else if (member_info.used === 2) {
+      output.error = -3
+      output.message = '탈퇴처리된 계정입니다.'
+      output.httpStatusCode = 403
+    } else if (member_info.used === 3) {
+      output.error = -4
+      output.message = '휴면처리된 계정입니다.'
+      output.httpStatusCode = 403
+    } else if (member_info.used === 4) {
+      output.error = -5
+      output.message = '사용중지된 계정입니다.'
+      output.httpStatusCode = 403
+    } else if (member_info.used === 5) {
+      output.error = -6
+      output.message = '사용제제된 계정입니다.'
+      output.httpStatusCode = 403
+    }
+    return output
+  }
+
   getMemberSubInfo = async (database, member_seq, lang = 'kor') => {
-    // const member_sub_model = this.getMemberSubModel(database)
-    // return await member_sub_model.getMemberSubInfo(member_seq, lang)
-    return null
+    const member_sub_model = this.getMemberSubModel(database)
+    return await member_sub_model.getMemberSubInfo(member_seq, lang)
+    // return null
   }
 
   getMemberInfoWithModel = async (database, member_seq) => {
@@ -163,11 +208,13 @@ const MemberServiceClass = class {
         'request_domain': request_body.request_domain
       }
       // logger.debug('[test2]', template_data)
-      const send_mail_result = await new SendMail().sendMailHtml([find_member_info.email_address], '지인 비밀번호 인증코드 입니다.', MemberTemplate.findUserInfo(template_data))
-      // logger.debug('[test3]')
-      if (send_mail_result.isSuccess() === false) {
-        throw send_mail_result
-      }
+
+      // 나중에 이메일 smtp 계정정보 수정하여 오픈 by djyu 2022.05.04
+      // const send_mail_result = await new SendMail().sendMailHtml([find_member_info.email_address], 'A.I 바우처 플랫폼 비밀번호 인증코드 입니다.', MemberTemplate.findUserInfo(template_data))
+      // // logger.debug('[test3]')
+      // if (send_mail_result.isSuccess() === false) {
+      //   throw send_mail_result
+      // }
 
       output.add('is_send', true)
     } else {
@@ -257,6 +304,92 @@ const MemberServiceClass = class {
     logger.debug(result);
     return result;
   }
+  getMemberList = async (database, req, search_keyword) => {
+    const member_model = this.getMemberModel(database)
+
+    const request_query = req.query ? req.query : {}
+    const page = Util.parseInt(request_query.page, 1)
+    const limit = Util.parseInt(request_query.limit, 20)
+
+    const search_options = {
+      page,
+      limit,
+    }
+    // const { member_info } = await this.getMemberListWithModel(database, search_options, search_keyword)
+    const member_info = await member_model.getMemberList(search_options, search_keyword)
+    // if (member_info.isEmpty()) {
+    //   throw new StdObject(-1, '회원정보가 존재하지 않습니다.', 400)
+    // }
+
+    return member_info
+  }
+  // getMemberListWithModel = async (database, search_options, search_keyword) => {
+  //   const member_model = this.getMemberModel(database)
+  //   // console.log(search_options)
+  //   const member_info = await member_model.getMemberList(search_options, search_keyword)
+  //   if (member_info.isEmpty()) {
+  //     throw new StdObject(-1, '회원정보가 존재하지 않습니다.', 400)
+  //   }
+  //
+  //   return {
+  //     member_model,
+  //     member_info
+  //   }
+  // }
+
+  // getMemberMetadata = async (member_seq) => {
+  //   let user_data = await UserDataModel.findByMemberSeq(member_seq, '-_id -member_seq -created_date -modify_date')
+  //   if (!user_data) {
+  //     user_data = await UserDataModel.createUserData(member_seq, {})
+  //   }
+  //   return user_data
+  // }
+
+  updateUsersUsed = async (database, req_body) => {
+    const arr_member_seq = req_body.params.users;
+    const used = req_body.params.used;
+    // _logger2.default.debug('updateUsersUsed 1', req_body.params.used, used);
+    // let reason = req_body.params.reason;
+    const params = {};
+    params.used = used;
+    // if (reason === undefined) {
+    //   reason = '';
+    // }
+    // params.reason = reason;
+
+    const member_model = this.getMemberModel(database);
+    const result = await member_model.updateUsersUsed(params, arr_member_seq);
+    // 메일 발송 부분 주석처리 by djyu 2021.09.17
+    // if (result.error ===0 && reason.length > 0){
+    //   const send_mail = new SendMail()
+    //   // logger.debug(arr_member_seq);
+    //   for (const key of Object.keys(arr_member_seq)) {
+    //     const seq = arr_member_seq[key];
+    //     const find_member_info = await MemberService.getMemberInfo(database, seq);
+
+    //     // logger.debug('seq', seq, find_member_info.email);
+    //     if (find_member_info.email_address && find_member_info.email.length > 0) {
+    //       const mail_to = [find_member_info.email_address]
+    //       const subject = '[알림] 회원 강제 탈퇴 안내'
+    //       const template_data = {
+    //         'user_name': find_member_info.user_name,
+    //         'user_id': find_member_info.user_id,
+    //         'email_address': find_member_info.email,
+    //         'rejectText': reason,
+    //         'service_name': 'Data Manager System',
+    //         'request_domain': 'http://jjin.com',
+    //       }
+    //       try {
+    //         const send_mail_result = await send_mail.sendMailHtml(mail_to, subject, MemberTemplate.memberUsed2(template_data))
+    //         // logger.debug('send_mail_result', send_mail_result);
+    //       } catch (e) {
+    //         logger.error('send email ', e);
+    //       }
+    //     }
+    //   }
+    // }
+    return result;
+  };
 }
 
 

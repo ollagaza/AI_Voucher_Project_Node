@@ -6,7 +6,7 @@ import Role from '../../constants/roles'
 import Util from '../../utils/Util'
 import StdObject from '../../wrapper/std-object'
 import log from '../../libs/logger'
-import GroupService from '../group/GroupService'
+// import GroupService from '../group/GroupService'
 import OperationFileService from './OperationFileService'
 import OperationMediaService from './OperationMediaService'
 import OperationDataService from './OperationDataService'
@@ -26,15 +26,15 @@ import { OperationAnalysisModel } from '../../database/mongodb/OperationAnalysis
 import Zip from 'adm-zip'
 import iconv from 'iconv-lite'
 import NaverObjectStorageService from '../storage/naver-object-storage-service'
-import GroupMemberModel from "../../database/mysql/group/GroupMemberModel";
+// import GroupMemberModel from "../../database/mysql/group/GroupMemberModel";
 import OperationCommentService from "./OperationCommentService";
 import GroupAlarmService from '../group/GroupAlarmService'
 import SyncService from '../sync/SyncService'
 import Constants from '../../constants/constants'
-import HashtagService from './HashtagService'
+// import HashtagService from './HashtagService'
 import TranscoderSyncService from '../sync/TranscoderSyncService'
 import DynamicService from "../dynamic/DynamicService";
-import GroupCountModel from "../../database/mysql/group/GroupCountsModel";
+// import GroupCountModel from "../../database/mysql/group/GroupCountsModel";
 
 const OperationServiceClass = class {
   constructor () {
@@ -57,96 +57,96 @@ const OperationServiceClass = class {
     return new OperationStorageModel(DBMySQL)
   }
 
-  getGroupMemberModel = (database = null) => {
-    if (database) {
-      return new GroupMemberModel(database)
-    }
-    return new GroupMemberModel(DBMySQL)
-  }
+  // getGroupMemberModel = (database = null) => {
+  //   if (database) {
+  //     return new GroupMemberModel(database)
+  //   }
+  //   return new GroupMemberModel(DBMySQL)
+  // }
 
-  createOperation = async (database, member_info, group_member_info, request_body, status = null, export_from_project = false) => {
-    const output = new StdObject()
-    let is_success = false
-    if (!request_body || !request_body.operation_info) {
-      throw new StdObject(-2, '수술 정보가 없습니다.', 500)
-    }
-    const operation_code = Util.trim(request_body.operation_info.operation_code)
-    const age = Util.parseInt(request_body.operation_info.patient_age, null)
-    const sex = Util.trim(request_body.operation_info.patient_sex)
-
-    request_body.operation_info.operation_code = operation_code ? operation_code : request_body.operation_info.operation_name
-    request_body.operation_info.patient_age = age ? age : null
-    request_body.operation_info.patient_sex = sex ? sex : null
-
-    const input_operation_data = new OperationInfo().getByRequestBody(request_body.operation_info)
-    if (input_operation_data.isEmpty()) {
-      throw new StdObject(-1, '수술 정보가 없습니다.', 500)
-    }
-    const operation_info = input_operation_data.toJSON()
-    const content_id = Util.getContentId()
-    const group_media_path = group_member_info.media_path
-    operation_info.group_seq = group_member_info.group_seq
-    operation_info.member_seq = member_info.seq
-    operation_info.media_path = `${group_media_path}/operation/${content_id}/`
-    operation_info.created_by_user = 1
-    operation_info.content_id = content_id
-    operation_info.export_from_project = export_from_project
-    if (status) {
-      operation_info.status = status
-    }
-
-    const operation_model = new OperationModel(database)
-    await operation_model.createOperation(operation_info)
-    if (!operation_info || !operation_info.seq) {
-      throw new StdObject(-1, '수술정보 입력에 실패하였습니다.', 500)
-    }
-    const operation_seq = operation_info.seq
-    output.add('operation_info', operation_info)
-
-    let operation_storage_seq = null
-
-    await database.transaction(async (transaction) => {
-      const operation_media_seq = await OperationMediaService.createOperationMediaInfo(database, operation_info)
-      operation_storage_seq = await this.getOperationStorageModel(transaction).createOperationStorageInfo(operation_info)
-
-      output.add('operation_seq', operation_seq)
-      output.add('operation_media_seq', operation_media_seq)
-      output.add('operation_storage_seq', operation_storage_seq)
-
-      is_success = true
-    })
-
-    if (is_success) {
-      await this.createOperationDirectory(operation_info)
-
-      try {
-        await VideoIndexInfoModel.createVideoIndexInfoByOperation(operation_info)
-        await OperationMetadataModel.createOperationMetadata(operation_info, request_body.meta_data)
-        if (operation_info.operation_type) {
-          await UserDataModel.updateByMemberSeq(member_info.seq, { operation_type: operation_info.operation_type, operation_mode: operation_info.mode })
-        }
-      } catch (error) {
-        log.error(this.log_prefix, '[createOperation]', 'create metadata error', error)
-      }
-
-      const created_operation_info = await operation_model.getOperationInfoNoJoin(operation_seq)
-      const operation_data_seq = await OperationDataService.createOperationDataByRequest(created_operation_info, request_body, group_member_info.group_seq, group_member_info.group_name, group_member_info.group_type, member_info.hospname)
-      output.add('operation_data_seq', operation_data_seq)
-
-      if (ServiceConfig.isVacs()) {
-        VacsService.increaseCount(1)
-      }
-
-      if (group_member_info) {
-        GroupService.onChangeGroupMemberContentCount(group_member_info.group_seq, member_info.seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP);
-      }
-    }
-
-    return output
-  }
+  // createOperation = async (database, member_info, group_member_info, request_body, status = null, export_from_project = false) => {
+  //   const output = new StdObject()
+  //   let is_success = false
+  //   if (!request_body || !request_body.operation_info) {
+  //     throw new StdObject(-2, '수술 정보가 없습니다.', 500)
+  //   }
+  //   const operation_code = Util.trim(request_body.operation_info.operation_code)
+  //   const age = Util.parseInt(request_body.operation_info.patient_age, null)
+  //   const sex = Util.trim(request_body.operation_info.patient_sex)
+  //
+  //   request_body.operation_info.operation_code = operation_code ? operation_code : request_body.operation_info.operation_name
+  //   request_body.operation_info.patient_age = age ? age : null
+  //   request_body.operation_info.patient_sex = sex ? sex : null
+  //
+  //   const input_operation_data = new OperationInfo().getByRequestBody(request_body.operation_info)
+  //   if (input_operation_data.isEmpty()) {
+  //     throw new StdObject(-1, '수술 정보가 없습니다.', 500)
+  //   }
+  //   const operation_info = input_operation_data.toJSON()
+  //   const content_id = Util.getContentId()
+  //   const group_media_path = group_member_info.media_path
+  //   operation_info.group_seq = group_member_info.group_seq
+  //   operation_info.member_seq = member_info.seq
+  //   operation_info.media_path = `${group_media_path}/operation/${content_id}/`
+  //   operation_info.created_by_user = 1
+  //   operation_info.content_id = content_id
+  //   operation_info.export_from_project = export_from_project
+  //   if (status) {
+  //     operation_info.status = status
+  //   }
+  //
+  //   const operation_model = new OperationModel(database)
+  //   await operation_model.createOperation(operation_info)
+  //   if (!operation_info || !operation_info.seq) {
+  //     throw new StdObject(-1, '수술정보 입력에 실패하였습니다.', 500)
+  //   }
+  //   const operation_seq = operation_info.seq
+  //   output.add('operation_info', operation_info)
+  //
+  //   let operation_storage_seq = null
+  //
+  //   await database.transaction(async (transaction) => {
+  //     const operation_media_seq = await OperationMediaService.createOperationMediaInfo(database, operation_info)
+  //     operation_storage_seq = await this.getOperationStorageModel(transaction).createOperationStorageInfo(operation_info)
+  //
+  //     output.add('operation_seq', operation_seq)
+  //     output.add('operation_media_seq', operation_media_seq)
+  //     output.add('operation_storage_seq', operation_storage_seq)
+  //
+  //     is_success = true
+  //   })
+  //
+  //   if (is_success) {
+  //     await this.createOperationDirectory(operation_info)
+  //
+  //     try {
+  //       await VideoIndexInfoModel.createVideoIndexInfoByOperation(operation_info)
+  //       await OperationMetadataModel.createOperationMetadata(operation_info, request_body.meta_data)
+  //       if (operation_info.operation_type) {
+  //         await UserDataModel.updateByMemberSeq(member_info.seq, { operation_type: operation_info.operation_type, operation_mode: operation_info.mode })
+  //       }
+  //     } catch (error) {
+  //       log.error(this.log_prefix, '[createOperation]', 'create metadata error', error)
+  //     }
+  //
+  //     const created_operation_info = await operation_model.getOperationInfoNoJoin(operation_seq)
+  //     const operation_data_seq = await OperationDataService.createOperationDataByRequest(created_operation_info, request_body, group_member_info.group_seq, group_member_info.group_name, group_member_info.group_type, member_info.hospname)
+  //     output.add('operation_data_seq', operation_data_seq)
+  //
+  //     if (ServiceConfig.isVacs()) {
+  //       VacsService.increaseCount(1)
+  //     }
+  //
+  //     // if (group_member_info) {
+  //     //   GroupService.onChangeGroupMemberContentCount(group_member_info.group_seq, member_info.seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP);
+  //     // }
+  //   }
+  //
+  //   return output
+  // }
 
   // 수술영상 등록 by djyu
-  createOperationReg = async (database, request_body, status = null, export_from_project = false) => {
+  createOperation = async (database, member_info, request_body, status = null, export_from_project = false) => {
     const output = new StdObject()
     let is_success = false
     if (!request_body || !request_body.operation_info) {
@@ -168,9 +168,11 @@ const OperationServiceClass = class {
     const content_id = Util.getContentId()
     const group_media_path = '/enterprise/2836b830-d983-11eb-8695-4f1fba2797f5'; // group_member_info.media_path
     operation_info.group_seq = 3
-    operation_info.member_seq = 2
-    operation_info.media_path = `${group_media_path}/operation/${content_id}/`
-    operation_info.created_by_user = 2
+    operation_info.member_seq = member_info.seq
+    // operation_info.media_path = `${group_media_path}/operation/${content_id}/`
+    // operation_info.media_path = `${group_info.media_path}/operation/${content_id}/`
+    operation_info.media_path = `/operation/${member_info.content_id}/${content_id}/`
+    operation_info.created_by_user = 1 // 1
     operation_info.content_id = content_id
     operation_info.export_from_project = export_from_project
     if (status) {
@@ -212,7 +214,7 @@ const OperationServiceClass = class {
       }
 
       const created_operation_info = await operation_model.getOperationInfoNoJoin(operation_seq)
-      const operation_data_seq = await OperationDataService.createOperationDataByRequest(created_operation_info, request_body, 3, 'test', 'G', 1)
+      const operation_data_seq = await OperationDataService.createOperationDataByRequest(created_operation_info, request_body, 1, 'group', 'G', 1)
       output.add('operation_data_seq', operation_data_seq)
 
       if (ServiceConfig.isVacs()) {
@@ -220,7 +222,7 @@ const OperationServiceClass = class {
       }
 
       // if (group_member_info) {
-        GroupService.onChangeGroupMemberContentCount(3, 2, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP);
+      //   GroupService.onChangeGroupMemberContentCount(3, 2, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP);
       // }
     }
 
@@ -274,7 +276,7 @@ const OperationServiceClass = class {
     const folder_info = request_body.folder_info ? request_body.folder_info : null
     const mento_group_seq = request_body.mento_group_seq ? request_body.mento_group_seq : null
     const group_private_fields = ['start_date', 'reg_date', 'modify_date']
-    const group_info = await GroupService.getGroupInfo(null, group_seq, group_private_fields)
+    // const group_info = await GroupService.getGroupInfo(null, group_seq, group_private_fields)
 
     let is_success = false
     const result = {
@@ -416,12 +418,12 @@ const OperationServiceClass = class {
 
         result.success = true
         await OperationFolderService.onChangeFolderSize(operation_info.group_seq, operation_info.folder_seq)
-        GroupService.onChangeGroupMemberContentCount(group_seq, operation_info.member_seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP, 1)
+        // GroupService.onChangeGroupMemberContentCount(group_seq, operation_info.member_seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP, 1)
         if (!Util.isEmpty(operation_info.folder_seq)) {
           await OperationFolderService.increaseCount(DBMySQL, operation_info.folder_seq, operation_info.mode)
         }
         const group_count_field_name = [operation_info.mode === 'operation' ? 'video_count' : 'file_count']
-        await new GroupCountModel(DBMySQL).AddCount(operation_info.group_seq, group_count_field_name, true)
+        // await new GroupCountModel(DBMySQL).AddCount(operation_info.group_seq, group_count_field_name, true)
       }
     } catch (e) {
       log.error(this.log_prefix, '[copyOperationOne]', origin_operation_seq, e, result)
@@ -483,20 +485,15 @@ const OperationServiceClass = class {
     return output
   }
 
-  deleteOperationByList = (group_seq, request_data) => {
+  deleteOperationByList = (request_data) => {
     (
-      async (group_seq, request_data) => {
+      async (request_data) => {
         try {
           let target_operation_list = []
-          let child_folder_seq_list = null
           log.debug(this.log_prefix, 'deleteOperationByList', request_data)
-          if (request_data.folder_seq_list) {
-            child_folder_seq_list = await OperationFolderService.getAllChildFolderSeqListBySeqList(DBMySQL, group_seq, request_data.folder_seq_list)
-            target_operation_list = await OperationService.getOperationListInFolderSeqList(DBMySQL, group_seq, child_folder_seq_list)
-          }
           if (request_data.operation_seq_list) {
             const operation_model = this.getOperationModel()
-            const operation_list = await operation_model.getOperationListInSeqList(group_seq, request_data.operation_seq_list)
+            const operation_list = await operation_model.getOperationListInSeqList(request_data.operation_seq_list)
             log.debug(this.log_prefix, '[deleteOperationByList]', 'operation_list', operation_list)
             if (operation_list) {
               target_operation_list = _.concat(target_operation_list, operation_list)
@@ -509,15 +506,11 @@ const OperationServiceClass = class {
               await OperationService.deleteOperationAndUpdateStorage(target_operation_list[cnt])
             }
           }
-          if (child_folder_seq_list) {
-            log.debug(this.log_prefix, '[deleteOperationByList]', 'child_folder_seq_list', child_folder_seq_list)
-            await OperationFolderService.deleteOperationFolders(DBMySQL, group_seq, child_folder_seq_list)
-          }
         } catch (error) {
-          log.error(this.log_prefix, '[deleteOperationBySeqList]', group_seq, request_data, error)
+          log.error(this.log_prefix, '[deleteOperationBySeqList]', request_data, error)
         }
       }
-    )(group_seq, request_data)
+    )(request_data)
   }
 
   deleteOperation = async (database, token_info, operation_seq, check_owner = true) => {
@@ -562,8 +555,14 @@ const OperationServiceClass = class {
             VacsService.updateStorageInfo()
             VacsService.increaseCount(0, 1)
           }
-          await OperationFolderService.onChangeFolderSize(operation_info.group_seq, operation_info.folder_seq)
-          await GroupService.updateMemberUsedStorage(null, operation_info.group_seq, operation_info.member_seq)
+          // await OperationFolderService.onChangeFolderSize(operation_info.group_seq, operation_info.folder_seq)
+
+          // 개인용량 Storage update
+          await this.getOperationStorageModel(DBMySQL).updateStorageSummary(operation_info.seq, operation_info.member_seq)
+
+          // await OperationStorageModel.updateStorageSummary(operation_info.seq, operation_info.member_seq)
+
+          // await GroupService.updateMemberUsedStorage(null, operation_info.group_seq, operation_info.member_seq)
         } catch (e) {
           log.error(this.log_prefix, '[onOperationDeleteComplete]', e)
         }
@@ -603,10 +602,11 @@ const OperationServiceClass = class {
     }
   }
 
-  getOperationListByRequest = async (database, group_seq, member_seq, group_member_info, group_grade_number, is_group_admin, request, is_admin = false, is_agent = false) => {
+  getOperationListByRequest = async (database, group_seq, member_seq, request, is_admin = false, is_agent = false) => {
     const request_query = request.query ? request.query : {}
     const page_params = {}
-    page_params.page = request_query.page
+    page_params.page = Util.parseInt(request_query.page, 1)
+    // page_params.limit = Util.parseInt(request_query.limit, 20)
     page_params.list_count = request_query.list_count
     page_params.page_count = request_query.page_count
     page_params.no_paging = request_query.no_paging === 'y' ? 'y' : 'n'
@@ -616,9 +616,7 @@ const OperationServiceClass = class {
     filter_params.status = request_query.status
     filter_params.menu = request_query.menu
     filter_params.member_seq = request_query.member_seq ? request_query.member_seq : null
-    if (request_query.folder_seq) {
-      filter_params.folder_seq = request_query.folder_seq
-    }
+
     if (request_query.search_keyword) {
       filter_params.search_keyword = Util.trim(request_query.search_keyword)
     }
@@ -634,7 +632,10 @@ const OperationServiceClass = class {
     if (request_query.analysis_status) {
       filter_params.analysis_status = `${request_query.analysis_status}`.toUpperCase()
     }
-    filter_params.use_user_name = !group_member_info || group_member_info.member_name_used === 1
+    // if(request_query.member_seq) {
+    //   filter_params.member_seq = request_query.member_seq
+    // }
+    // filter_params.use_user_name = !group_member_info || group_member_info.member_name_used === 1
     const order_params = {}
     order_params.field = request_query.order_fields
     order_params.type = request_query.order_type
@@ -643,70 +644,64 @@ const OperationServiceClass = class {
 
     let operation_data_seq_list = []
     if (filter_params.search_keyword) {
-      const hashtag_use = await HashtagService.searchHashtagUse(database, group_seq, filter_params.search_keyword, HashtagService.TAG_TARGET_OPERATION)
-      if (hashtag_use && hashtag_use.length) {
-        for (let i = 0; i < hashtag_use.length; i++) {
-          operation_data_seq_list.push(hashtag_use[i].target_seq)
-        }
-      }
     }
 
     const operation_model = this.getOperationModel(database)
-    return operation_model.getOperationInfoListPage(group_seq, member_seq, group_grade_number, is_group_admin, page_params, filter_params, order_params, is_admin, operation_data_seq_list, is_agent)
+    return operation_model.getOperationInfoListPage(member_seq, page_params, filter_params, order_params, is_admin, operation_data_seq_list, is_agent)
   }
 
-  // List by djyu
-  getOperationListByRequest2 = async (database, group_seq, member_seq, group_member_info, group_grade_number, is_group_admin, request, is_admin = false, is_agent = false) => {
-    const request_query = request.query ? request.query : {}
-    const page_params = {}
-    page_params.page = request_query.page
-    page_params.list_count = request_query.list_count
-    page_params.page_count = request_query.page_count
-    page_params.no_paging = request_query.no_paging === 'y' ? 'y' : 'n'
-
-    const filter_params = {}
-    filter_params.analysis_complete = request_query.analysis_complete
-    filter_params.status = request_query.status
-    filter_params.menu = request_query.menu
-    filter_params.member_seq = request_query.member_seq ? request_query.member_seq : null
-    if (request_query.folder_seq) {
-      filter_params.folder_seq = request_query.folder_seq
-    }
-    if (request_query.search_keyword) {
-      filter_params.search_keyword = Util.trim(request_query.search_keyword)
-    }
-    if (request_query.member_grade) {
-      filter_params.member_grade = request_query.member_grade
-    }
-    if (request_query.day) {
-      filter_params.day = request_query.day
-    }
-    if (request_query.limit) {
-      filter_params.limit = request_query.limit
-    }
-    if (request_query.analysis_status) {
-      filter_params.analysis_status = `${request_query.analysis_status}`.toUpperCase()
-    }
-    filter_params.use_user_name = !group_member_info || group_member_info.member_name_used === 1
-    const order_params = {}
-    order_params.field = request_query.order_fields
-    order_params.type = request_query.order_type
-
-    // log.debug(this.log_prefix, '[getOperationListByRequest]', 'request.query', request_query, page_params, filter_params, order_params)
-
-    let operation_data_seq_list = []
-    if (filter_params.search_keyword) {
-      const hashtag_use = await HashtagService.searchHashtagUse(database, group_seq, filter_params.search_keyword, HashtagService.TAG_TARGET_OPERATION)
-      if (hashtag_use && hashtag_use.length) {
-        for (let i = 0; i < hashtag_use.length; i++) {
-          operation_data_seq_list.push(hashtag_use[i].target_seq)
-        }
-      }
-    }
-
-    const operation_model = this.getOperationModel(database)
-    return operation_model.getOperationInfoListPage(group_seq, member_seq, group_grade_number, is_group_admin, page_params, filter_params, order_params, is_admin, operation_data_seq_list, is_agent)
-  }
+  // // List by djyu
+  // getOperationListByRequest2 = async (database, group_seq, member_seq, group_member_info, group_grade_number, is_group_admin, request, is_admin = false, is_agent = false) => {
+  //   const request_query = request.query ? request.query : {}
+  //   const page_params = {}
+  //   page_params.page = request_query.page
+  //   page_params.list_count = request_query.list_count
+  //   page_params.page_count = request_query.page_count
+  //   page_params.no_paging = request_query.no_paging === 'y' ? 'y' : 'n'
+  //
+  //   const filter_params = {}
+  //   filter_params.analysis_complete = request_query.analysis_complete
+  //   filter_params.status = request_query.status
+  //   filter_params.menu = request_query.menu
+  //   filter_params.member_seq = request_query.member_seq ? request_query.member_seq : null
+  //   if (request_query.folder_seq) {
+  //     filter_params.folder_seq = request_query.folder_seq
+  //   }
+  //   if (request_query.search_keyword) {
+  //     filter_params.search_keyword = Util.trim(request_query.search_keyword)
+  //   }
+  //   if (request_query.member_grade) {
+  //     filter_params.member_grade = request_query.member_grade
+  //   }
+  //   if (request_query.day) {
+  //     filter_params.day = request_query.day
+  //   }
+  //   if (request_query.limit) {
+  //     filter_params.limit = request_query.limit
+  //   }
+  //   if (request_query.analysis_status) {
+  //     filter_params.analysis_status = `${request_query.analysis_status}`.toUpperCase()
+  //   }
+  //   filter_params.use_user_name = !group_member_info || group_member_info.member_name_used === 1
+  //   const order_params = {}
+  //   order_params.field = request_query.order_fields
+  //   order_params.type = request_query.order_type
+  //
+  //   // log.debug(this.log_prefix, '[getOperationListByRequest]', 'request.query', request_query, page_params, filter_params, order_params)
+  //
+  //   let operation_data_seq_list = []
+  //   // if (filter_params.search_keyword) {
+  //   //   const hashtag_use = await HashtagService.searchHashtagUse(database, group_seq, filter_params.search_keyword, HashtagService.TAG_TARGET_OPERATION)
+  //   //   if (hashtag_use && hashtag_use.length) {
+  //   //     for (let i = 0; i < hashtag_use.length; i++) {
+  //   //       operation_data_seq_list.push(hashtag_use[i].target_seq)
+  //   //     }
+  //   //   }
+  //   // }
+  //
+  //   const operation_model = this.getOperationModel(database)
+  //   return operation_model.getOperationInfoListPage(group_seq, member_seq, group_grade_number, is_group_admin, page_params, filter_params, order_params, is_admin, operation_data_seq_list, is_agent)
+  // }
 
   setMediaInfo = async (database, operation_info) => {
     const media_info = await OperationMediaService.getOperationMediaInfo(database, operation_info)
@@ -741,21 +736,6 @@ const OperationServiceClass = class {
           }
         }
       }
-    }
-
-    if (import_media_info) {
-      await this.setMediaInfo(database, operation_info)
-    }
-
-    return operation_info
-  }
-
-  // 개인정보 및 수술정보 확인 by djyu
-  getOperationInfo2 = async (database, operation_seq, token_info, check_owner = true, import_media_info = false) => {
-    const { operation_info } = await this.getOperationInfoNoAuth(database, operation_seq, false)
-
-    if (!operation_info || operation_info.isEmpty()) {
-      throw new StdObject(-1, '수술 정보가 존재하지 않습니다.', 400)
     }
 
     if (import_media_info) {
@@ -931,7 +911,7 @@ const OperationServiceClass = class {
     }
   }
 
-  requestAnalysis = (database, token_info, operation_seq, group_member_info, member_info) => {
+  requestAnalysis = (database, token_info, operation_seq, member_info) => {
     (
       async () => {
         try {
@@ -945,12 +925,12 @@ const OperationServiceClass = class {
                 SyncService.sendAnalysisCompleteMessage(operation_info)
               } else {
                 await this.updateAnalysisStatus(null, operation_info, 'R')
-                this.onOperationCreateComplete(operation_info, group_member_info, member_info)
+                this.onOperationCreateComplete(operation_info, member_info)
                 await SyncService.moveImageFileToObject(operation_info)
               }
             } else {
               await this.requestTranscoder(operation_info)
-              this.onOperationCreateComplete(operation_info, group_member_info, member_info)
+              this.onOperationCreateComplete(operation_info, member_info)
             }
           } else {
             log.error(this.log_prefix, '[requestAnalysis] operation not exists', operation_seq)
@@ -962,12 +942,23 @@ const OperationServiceClass = class {
     )()
   }
 
+
+  getBaseInfo = (database, req) => {
+    const token_info = req.token_info
+    // log.error(this.log_prefix, '[getBaseInfo] token_info', req);
+    const member_seq = token_info.getId()
+    return {
+      token_info,
+      member_seq
+    }
+  }
+
   // 인코딩, 썸네일 by djyu
-  requestAnalysis2 = (database,  operation_seq) => {
+  requestAnalysis2 = (database, token_info, operation_seq, member_info) => {
     (
       async () => {
         try {
-          const operation_info = await this.getOperationInfo2(database, operation_seq, '', false)
+          const operation_info = await this.getOperationInfo(database, operation_seq, token_info, false)
           // log.debug(this.log_prefix, 'operation_info', 'operation_info.seq:', operation_info.seq, 'operation_seq:', operation_seq, `${operation_info.seq}` === `${operation_seq}`)
           if (operation_info && `${operation_info.seq}` === `${operation_seq}`) {
             if (operation_info.mode === this.MODE_FILE) {
@@ -977,40 +968,40 @@ const OperationServiceClass = class {
                 SyncService.sendAnalysisCompleteMessage(operation_info)
               } else {
                 await this.updateAnalysisStatus(null, operation_info, 'R')
-                this.onOperationCreateComplete(operation_info, group_member_info, member_info)
+                this.onOperationCreateComplete(operation_info, member_info)
                 await SyncService.moveImageFileToObject(operation_info)
               }
             } else {
               await this.requestTranscoder(operation_info)
-              this.onOperationCreateComplete(operation_info, group_member_info, member_info)
+              this.onOperationCreateComplete(operation_info, member_info)
             }
           } else {
-            log.error(this.log_prefix, '[requestAnalysis] operation not exists', operation_seq)
+            log.error(this.log_prefix, '[requestAnalysis2] operation not exists', operation_seq)
           }
         } catch (error) {
-          log.error(this.log_prefix, '[requestAnalysis]', operation_seq, error)
+          log.error(this.log_prefix, '[requestAnalysis2]', operation_seq, error)
         }
       }
     )()
   }
 
-  onOperationCreateComplete(operation_info, group_member_info, member_info) {
+  onOperationCreateComplete(operation_info, member_info) {
     (
       async () => {
         try {
           if (!Util.isEmpty(operation_info.folder_seq)) {
             await OperationFolderService.increaseCount(DBMySQL, operation_info.folder_seq, operation_info.mode)
           }
-          const group_count_field_name = [operation_info.mode === 'operation' ? 'video_count' : 'file_count']
-          await new GroupCountModel(DBMySQL).AddCount(operation_info.group_seq, group_count_field_name, true)
+          // const group_count_field_name = [operation_info.mode === 'operation' ? 'video_count' : 'file_count']
+          // // await new GroupCountModel(DBMySQL).AddCount(operation_info.group_seq, group_count_field_name, true)
 
           const alarm_data = {
             operation_seq: operation_info.seq,
             member_seq: member_info.seq
           }
-          const alarm_message = `'{name}'님이 '${operation_info.operation_name}'수술을 등록했습니다.`
+          const name = member_info.user_name
+          const alarm_message = `'${name}'님이 '${operation_info.operation_name}'수술을 등록했습니다.`
 
-          const name = group_member_info.member_name_used ? member_info.user_name : member_info.user_nickname
           const socket_message = {
             title: `'${name}'님이 '${operation_info.operation_name}'수술을 등록했습니다.`,
           }
@@ -1023,7 +1014,7 @@ const OperationServiceClass = class {
             reload_operation_list: true,
             disable_click: true
           }
-          GroupAlarmService.createOperationGroupAlarm(group_member_info.group_seq, GroupAlarmService.ALARM_TYPE_OPERATION, alarm_message, operation_info, member_info, alarm_data, socket_message, socket_data, true)
+          GroupAlarmService.createOperationGroupAlarm(member_info.seq, GroupAlarmService.ALARM_TYPE_OPERATION, alarm_message, operation_info, member_info, alarm_data, socket_message, socket_data, true)
         } catch (error) {
           log.error(this.log_prefix, '[onOperationCreateComplete]', error)
         }
@@ -1033,7 +1024,7 @@ const OperationServiceClass = class {
 
   updateStorageSize = async (operation_info) => {
     await new OperationStorageModel(DBMySQL).updateUploadFileSize(operation_info, OperationFileService.TYPE_ALL)
-    await GroupService.updateMemberUsedStorage(null, operation_info.group_seq, operation_info.member_seq)
+    // await GroupService.updateMemberUsedStorage(null, operation_info.group_seq, operation_info.member_seq)
     await OperationFolderService.onChangeFolderSize(operation_info.group_seq, operation_info.folder_seq)
     if (ServiceConfig.isVacs()) {
       VacsService.updateStorageInfo()
@@ -1253,8 +1244,8 @@ const OperationServiceClass = class {
       }
 
       if (options.writer_info) {
-        const writer_info = await GroupService.getGroupInfoWithGroupCounts(DBMySQL, operation_info.group_seq)
-        output.add('writer_info', writer_info)
+        // const writer_info = await GroupService.getGroupInfoWithGroupCounts(DBMySQL, operation_info.group_seq)
+        output.add('writer_info', '')
       }
 
       if (options.refer_file_list) {
@@ -1292,12 +1283,12 @@ const OperationServiceClass = class {
     return await model.updateStatusFavorite(operation_seq, is_delete)
   }
 
-  updateStatusTrash = async (database, group_seq, request_body, is_restore = false, is_delete_by_admin, delete_member_seq) => {
+  updateStatusTrash = async (database, request_body, is_restore = false, is_admin, delete_member_seq) => {
     const operation_seq_list = request_body.seq_list
-    const restore_folder_info = is_restore && request_body.folder_info ? request_body.folder_info : null
+    // const restore_folder_info = is_restore && request_body.folder_info ? request_body.folder_info : null
     const model = this.getOperationModel(database)
     const status = is_restore ? 'Y' : 'T'
-    await model.updateStatusTrash(operation_seq_list, status, is_delete_by_admin, delete_member_seq, restore_folder_info)
+    await model.updateStatusTrash(operation_seq_list, status, is_admin, delete_member_seq)
     await OperationDataService.updateOperationDataByOperationSeqList(operation_seq_list, status)
 
     try {
@@ -1305,30 +1296,30 @@ const OperationServiceClass = class {
         const where = { 'operation.seq': operation_seq_list[cnt] }
         const operation_info = await model.getOperation(where);
 
-        if (is_restore) {
-          GroupService.onChangeGroupMemberContentCount(group_seq, operation_info.member_seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP)
-          if (!Util.isEmpty(operation_info.folder_seq)) {
-            await OperationFolderService.increaseCount(DBMySQL, operation_info.folder_seq, operation_info.mode)
-          }
-          const group_count_field_name = [operation_info.mode === 'operation' ? 'video_count' : 'file_count']
-          await new GroupCountModel(DBMySQL).AddCount(operation_info.group_seq, group_count_field_name, true)
-        } else {
-          GroupService.onChangeGroupMemberContentCount(group_seq, operation_info.member_seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.DOWN)
-          if (!Util.isEmpty(operation_info.folder_seq)) {
-            await OperationFolderService.decreaseCount(DBMySQL, operation_info.folder_seq, operation_info.mode)
-          }
-          const group_count_field_name = [operation_info.mode === 'operation' ? 'video_count' : 'file_count']
-          await new GroupCountModel(DBMySQL).MinusCount(operation_info.group_seq, group_count_field_name, true)
-        }
-
-        if (is_restore && restore_folder_info && restore_folder_info.seq) {
-          await OperationFolderService.onChangeFolderSize(group_seq, restore_folder_info.seq)
-        } else if (operation_info.folder_seq !== null) {
-          await OperationFolderService.onChangeFolderSize(group_seq, operation_info.folder_seq)
-        }
+        // if (is_restore) {
+        //   // GroupService.onChangeGroupMemberContentCount(group_seq, operation_info.member_seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.UP)
+        //   if (!Util.isEmpty(operation_info.folder_seq)) {
+        //     await OperationFolderService.increaseCount(DBMySQL, operation_info.folder_seq, operation_info.mode)
+        //   }
+        //   const group_count_field_name = [operation_info.mode === 'operation' ? 'video_count' : 'file_count']
+        //   // await new GroupCountModel(DBMySQL).AddCount(operation_info.group_seq, group_count_field_name, true)
+        // } else {
+        //   // GroupService.onChangeGroupMemberContentCount(group_seq, operation_info.member_seq, operation_info.mode === 'operation' ? 'vid' : 'file', Constants.DOWN)
+        //   if (!Util.isEmpty(operation_info.folder_seq)) {
+        //     await OperationFolderService.decreaseCount(DBMySQL, operation_info.folder_seq, operation_info.mode)
+        //   }
+        //   const group_count_field_name = [operation_info.mode === 'operation' ? 'video_count' : 'file_count']
+        //   // await new GroupCountModel(DBMySQL).MinusCount(operation_info.group_seq, group_count_field_name, true)
+        // }
+        //
+        // if (is_restore && restore_folder_info && restore_folder_info.seq) {
+        //   await OperationFolderService.onChangeFolderSize(group_seq, restore_folder_info.seq)
+        // } else if (operation_info.folder_seq !== null) {
+        //   await OperationFolderService.onChangeFolderSize(group_seq, operation_info.folder_seq)
+        // }
       }
     } catch (error) {
-      log.error(this.log_prefix, '[updateStatusTrash]', group_seq, operation_seq_list, is_restore, error)
+      log.error(this.log_prefix, '[updateStatusTrash]', operation_seq_list, is_restore, error)
       throw error
     }
 
@@ -1532,18 +1523,18 @@ const OperationServiceClass = class {
     if (!operation_info || operation_info.isEmpty()) {
       throw new StdObject(1, '수술정보가 존재하지 않습니다.', 400)
     }
-    if (!operation_info.folder_seq) {
-      return true
-    }
-    const folder_info = await OperationFolderService.getFolderInfo(DBMySQL, group_seq, operation_info.folder_seq)
-    if (!folder_info || folder_info.status !== 'Y') {
-      throw new StdObject(2, '상위폴더가 삭제되었습니다.', 400)
-    }
-    if (is_group_admin) return true
-    const folder_grade_number = OperationFolderService.getFolderGradeNumber(folder_info.access_type)
-    if (folder_grade_number > group_grade_number) {
-      throw new StdObject(3, '상위폴더에 접근 권한이 없습니다.', 400)
-    }
+    // if (!operation_info.folder_seq) {
+    //   return true
+    // }
+    // const folder_info = await OperationFolderService.getFolderInfo(DBMySQL, group_seq, operation_info.folder_seq)
+    // if (!folder_info || folder_info.status !== 'Y') {
+    //   throw new StdObject(2, '상위폴더가 삭제되었습니다.', 400)
+    // }
+    // if (is_group_admin) return true
+    // const folder_grade_number = OperationFolderService.getFolderGradeNumber(folder_info.access_type)
+    // if (folder_grade_number > group_grade_number) {
+    //   throw new StdObject(3, '상위폴더에 접근 권한이 없습니다.', 400)
+    // }
     return true
   }
 
@@ -1557,7 +1548,7 @@ const OperationServiceClass = class {
       throw new StdObject(2011, '수술정보가 존재하지 않습니다.')
     }
     const group_seq = operation_info.group_seq
-    const { is_group_admin } = await GroupService.checkGroupAuthBySeq(null, group_seq, member_seq, true, false, false)
+    // const { is_group_admin } = await GroupService.checkGroupAuthBySeq(null, group_seq, member_seq, true, false, false)
     const has_admin_permission = is_group_admin === true || operation_info.member_seq === member_seq
     const import_main_files = Util.isTrue(query.main)
     const import_refer_files = Util.isTrue(query.refer)

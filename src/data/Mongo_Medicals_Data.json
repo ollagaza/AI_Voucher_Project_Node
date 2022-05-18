@@ -1,0 +1,831 @@
+{
+  "version": 0.8,
+  "kor": [
+    {
+      "code": "00",
+      "pCode": "00",
+      "text": "일반과",
+      "icon": "/img/renewal/memuicon/general.png"
+    },
+    {
+      "code": "01",
+      "pCode": "00",
+      "text": "내과 통합",
+      "icon": "/img/renewal/memuicon/internal.png",
+      "sub": [
+        {
+          "code": "01",
+          "pCode": "00",
+          "text": "내과",
+          "icon": "/img/renewal/memuicon/internal.png"
+        },
+        {
+          "code": "01",
+          "pCode": "01",
+          "text": "소화기내과"
+        },
+        {
+          "code": "01",
+          "pCode": "02",
+          "text": "순환기내과"
+        },
+        {
+          "code": "01",
+          "pCode": "03",
+          "text": "호흡기내과"
+        },
+        {
+          "code": "01",
+          "pCode": "04",
+          "text": "내분비내과"
+        },
+        {
+          "code": "01",
+          "pCode": "05",
+          "text": "신장내과"
+        },
+        {
+          "code": "01",
+          "pCode": "06",
+          "text": "혈액종양내과"
+        },
+        {
+          "code": "01",
+          "pCode": "07",
+          "text": "감염내과"
+        },
+        {
+          "code": "01",
+          "pCode": "08",
+          "text": "알레르기내과"
+        },
+        {
+          "code": "01",
+          "pCode": "09",
+          "text": "류마티스내과"
+        }
+      ]
+    },
+    {
+      "code": "02",
+      "pCode": "00",
+      "text": "신경과",
+      "icon": "/img/renewal/memuicon/neuron.png"
+    },
+    {
+      "code": "03",
+      "pCode": "00",
+      "text": "정신건강의학과",
+      "icon": "/img/renewal/memuicon/mental.png"
+    },
+    {
+      "code": "04",
+      "pCode": "00",
+      "text": "외과 통합",
+      "icon": "/img/renewal/memuicon/operation.png",
+      "sub": [
+        {
+          "code": "04",
+          "pCode": "00",
+          "text": "외과",
+          "icon": "/img/renewal/memuicon/operation.png"
+        },
+        {
+          "code": "04",
+          "pCode": "01",
+          "text": "간담도췌외과"
+        },
+        {
+          "code": "04",
+          "pCode": "02",
+          "text": "간이식및간담도외과"
+        },
+        {
+          "code": "04",
+          "pCode": "03",
+          "text": "대장항문외과"
+        },
+        {
+          "code": "04",
+          "pCode": "04",
+          "text": "위장관외과"
+        },
+        {
+          "code": "04",
+          "pCode": "05",
+          "text": "유방내분비외과"
+        },
+        {
+          "code": "04",
+          "pCode": "06",
+          "text": "일반외과"
+        },
+        {
+          "code": "04",
+          "pCode": "07",
+          "text": "혈관외과"
+        }
+      ]
+    },
+    {
+      "code": "05",
+      "pCode": "00",
+      "text": "정형외과",
+      "icon": "/img/renewal/memuicon/orthopedics.png"
+    },
+    {
+      "code": "06",
+      "pCode": "00",
+      "text": "신경외과",
+      "icon": "/img/renewal/memuicon/neurological.png"
+    },
+    {
+      "code": "07",
+      "pCode": "00",
+      "text": "흉부외과",
+      "icon": "/img/renewal/memuicon/thoracic.png",
+      "sub": [
+        {
+          "code": "07",
+          "pCode": "00",
+          "text": "흉부외과",
+          "icon": "/img/renewal/memuicon/thoracic.png"
+        },
+        {
+          "code": "07",
+          "pCode": "01",
+          "text": "성인심혈관외과"
+        },
+        {
+          "code": "07",
+          "pCode": "02",
+          "text": "폐식도외과"
+        }
+      ]
+    },
+    {
+      "code": "08",
+      "pCode": "00",
+      "text": "성형외과",
+      "icon": "/img/renewal/memuicon/plastic.png"
+    },
+    {
+      "code": "09",
+      "pCode": "00",
+      "text": "마취통증의학과",
+      "icon": "/img/renewal/memuicon/anesthesiology.png"
+    },
+    {
+      "code": "10",
+      "pCode": "00",
+      "text": "산부인과",
+      "icon": "/img/renewal/memuicon/ob-gyn.png"
+    },
+    {
+      "code": "11",
+      "pCode": "00",
+      "text": "소아청소년과",
+      "icon": "/img/renewal/memuicon/pediatric.png",
+      "sub": [
+        {
+          "code": "11",
+          "pCode": "00",
+          "text": "소아청소년과",
+          "icon": "/img/renewal/memuicon/pediatric.png"
+        },
+        {
+          "code": "11",
+          "pCode": "01",
+          "text": "소아청소년 내분비대사과"
+        },
+        {
+          "code": "11",
+          "pCode": "02",
+          "text": "소아청소년 신장과"
+        },
+        {
+          "code": "11",
+          "pCode": "03",
+          "text": "소아청소년 호흡기알레르기과"
+        },
+        {
+          "code": "11",
+          "pCode": "04",
+          "text": "소아청소년 신경과"
+        },
+        {
+          "code": "11",
+          "pCode": "05",
+          "text": "소아청소년 소화기 영양과"
+        },
+        {
+          "code": "11",
+          "pCode": "06",
+          "text": "소아청소년 중환자과"
+        },
+        {
+          "code": "11",
+          "pCode": "07",
+          "text": "소아청소년 일반과"
+        },
+        {
+          "code": "11",
+          "pCode": "08",
+          "text": "소아청소년 종양혈액과"
+        },
+        {
+          "code": "11",
+          "pCode": "09",
+          "text": "소아청소년 심장과"
+        },
+        {
+          "code": "11",
+          "pCode": "10",
+          "text": "소아청소년 감염과"
+        },
+        {
+          "code": "11",
+          "pCode": "11",
+          "text": "신생아과"
+        },
+        {
+          "code": "11",
+          "pCode": "12",
+          "text": "소아청소년 정신건강의학과"
+        },
+        {
+          "code": "11",
+          "pCode": "13",
+          "text": "소아외과"
+        },
+        {
+          "code": "11",
+          "pCode": "14",
+          "text": "소아청소년 심장외과"
+        },
+        {
+          "code": "11",
+          "pCode": "15",
+          "text": "소아청소년 정형외과"
+        },
+        {
+          "code": "11",
+          "pCode": "16",
+          "text": "소아청소년 신경외과"
+        },
+        {
+          "code": "11",
+          "pCode": "17",
+          "text": "소아청소년 비뇨의학과"
+        },
+        {
+          "code": "11",
+          "pCode": "18",
+          "text": "소아청소년 재활의학과"
+        },
+        {
+          "code": "11",
+          "pCode": "19",
+          "text": "소아청소년 영상의학과"
+        },
+        {
+          "code": "11",
+          "pCode": "20",
+          "text": "소아천식아토피센터"
+        },
+        {
+          "code": "11",
+          "pCode": "21",
+          "text": "의학유전학과"
+        },
+        {
+          "code": "11",
+          "pCode": "22",
+          "text": "일반소아청소년과"
+        }
+      ]
+    },
+    {
+      "code": "12",
+      "pCode": "00",
+      "text": "안과",
+      "icon": "/img/renewal/memuicon/ophthalmology.png"
+    },
+    {
+      "code": "13",
+      "pCode": "00",
+      "text": "이비인후과",
+      "icon": "/img/renewal/memuicon/otolaryngology.png"
+    },
+    {
+      "code": "14",
+      "pCode": "00",
+      "text": "피부과",
+      "icon": "/img/renewal/memuicon/dermatology.png"
+    },
+    {
+      "code": "15",
+      "pCode": "00",
+      "text": "비뇨의학과",
+      "icon": "/img/renewal/memuicon/urology.png"
+    },
+    {
+      "code": "16",
+      "pCode": "00",
+      "text": "영상의학과",
+      "icon": "/img/renewal/memuicon/radiology.png"
+    },
+    {
+      "code": "17",
+      "pCode": "00",
+      "text": "방사선종양학과",
+      "icon": "/img/renewal/memuicon/radiation.png"
+    },
+    {
+      "code": "18",
+      "pCode": "00",
+      "text": "병리과",
+      "icon": "/img/renewal/memuicon/pathology.png"
+    },
+    {
+      "code": "19",
+      "pCode": "00",
+      "text": "진단검사의학과",
+      "icon": "/img/renewal/memuicon/diagnostic.png"
+    },
+    {
+      "code": "20",
+      "pCode": "00",
+      "text": "결핵과",
+      "icon": "/img/renewal/memuicon/tuberculosis.png"
+    },
+    {
+      "code": "21",
+      "pCode": "00",
+      "text": "재활의학과",
+      "icon": "/img/renewal/memuicon/rehabilitation.png"
+    },
+    {
+      "code": "22",
+      "pCode": "00",
+      "text": "핵의학과",
+      "icon": "/img/renewal/memuicon/nuclear.png"
+    },
+    {
+      "code": "23",
+      "pCode": "00",
+      "text": "가정의학과",
+      "icon": "/img/renewal/memuicon/family.png"
+    },
+    {
+      "code": "24",
+      "pCode": "00",
+      "text": "응급의학과",
+      "icon": "/img/renewal/memuicon/emergency.png"
+    },
+    {
+      "code": "25",
+      "pCode": "00",
+      "text": "직업환경의학과",
+      "icon": "/img/renewal/memuicon/occupational.png"
+    },
+    {
+      "code": "26",
+      "pCode": "00",
+      "text": "예방의학과",
+      "icon": "/img/renewal/memuicon/preventive.png"
+    },
+    {
+      "code": "27",
+      "pCode": "00",
+      "text": "건강의학과",
+      "icon": "/img/renewal/memuicon/health.png"
+    },
+    {
+      "code": "28",
+      "pCode": "00",
+      "text": "의공학과",
+      "icon": "/img/renewal/memuicon/engineering.png"
+    },
+    {
+      "code": "29",
+      "pCode": "00",
+      "text": "임상약리학과",
+      "icon": "/img/renewal/memuicon/pharmacology.png"
+    }
+  ],
+  "eng": [
+    {
+      "code": "00",
+      "pCode": "00",
+      "text": "General medicine",
+      "icon": "/img/renewal/memuicon/general.png"
+    },
+    {
+      "code": "01",
+      "pCode": "00",
+      "text": "Internal medicine",
+      "icon": "/img/renewal/memuicon/internal.png",
+      "sub": [
+        {
+          "code": "01",
+          "pCode": "00",
+          "text": "Internal medicine",
+          "icon": "/img/renewal/memuicon/internal.png"
+        },
+        {
+          "code": "01",
+          "pCode": "01",
+          "text": "Gastroenterology"
+        },
+        {
+          "code": "01",
+          "pCode": "02",
+          "text": "Cardiology"
+        },
+        {
+          "code": "01",
+          "pCode": "03",
+          "text": "Pulmonology"
+        },
+        {
+          "code": "01",
+          "pCode": "04",
+          "text": "Endocrinology"
+        },
+        {
+          "code": "01",
+          "pCode": "05",
+          "text": "Nephrology"
+        },
+        {
+          "code": "01",
+          "pCode": "06",
+          "text": "Hematology"
+        },
+        {
+          "code": "01",
+          "pCode": "07",
+          "text": "Infection"
+        },
+        {
+          "code": "01",
+          "pCode": "08",
+          "text": "Allergy"
+        },
+        {
+          "code": "01",
+          "pCode": "09",
+          "text": "Rheumatology"
+        }
+      ]
+    },
+    {
+      "code": "02",
+      "pCode": "00",
+      "text": "Neurology",
+      "icon": "/img/renewal/memuicon/neuron.png"
+    },
+    {
+      "code": "03",
+      "pCode": "00",
+      "text": "Psychiatry",
+      "icon": "/img/renewal/memuicon/mental.png"
+    },
+    {
+      "code": "04",
+      "pCode": "00",
+      "text": "General surgery",
+      "icon": "/img/renewal/memuicon/operation.png",
+      "sub": [
+        {
+          "code": "04",
+          "pCode": "00",
+          "text": "General surgery",
+          "icon": "/img/renewal/memuicon/operation.png"
+        },
+        {
+          "code": "04",
+          "pCode": "01",
+          "text": "Hepatobiliary pancreatic surgery"
+        },
+        {
+          "code": "04",
+          "pCode": "02",
+          "text": "Liver transplantation and hepatobiliary surgery"
+        },
+        {
+          "code": "04",
+          "pCode": "03",
+          "text": "Colon and rectal surgery"
+        },
+        {
+          "code": "04",
+          "pCode": "04",
+          "text": "Gastrointestinal Surgery"
+        },
+        {
+          "code": "04",
+          "pCode": "05",
+          "text": "Breast and Endocrine Surgery"
+        },
+        {
+          "code": "04",
+          "pCode": "06",
+          "text": "General surgery"
+        },
+        {
+          "code": "04",
+          "pCode": "07",
+          "text": "Hemato-oncology"
+        }
+      ]
+    },
+    {
+      "code": "05",
+      "pCode": "00",
+      "text": "Orthopedics",
+      "icon": "/img/renewal/memuicon/orthopedics.png"
+    },
+    {
+      "code": "06",
+      "pCode": "00",
+      "text": "Neurosurgery",
+      "icon": "/img/renewal/memuicon/neurological.png"
+    },
+    {
+      "code": "07",
+      "pCode": "00",
+      "text": "Cardiothoracic surgery",
+      "icon": "/img/renewal/memuicon/thoracic.png",
+      "sub": [
+        {
+          "code": "07",
+          "pCode": "00",
+          "text": "Cardiothoracic surgery",
+          "icon": "/img/renewal/memuicon/thoracic.png"
+        },
+        {
+          "code": "07",
+          "pCode": "01",
+          "text": "Adult cardiac surgery"
+        },
+        {
+          "code": "07",
+          "pCode": "02",
+          "text": "Lung and Esophageal Surgery"
+        }
+      ]
+    },
+    {
+      "code": "08",
+      "pCode": "00",
+      "text": "Plastic Surgery",
+      "icon": "/img/renewal/memuicon/plastic.png"
+    },
+    {
+      "code": "09",
+      "pCode": "00",
+      "text": "Anesthesiology",
+      "icon": "/img/renewal/memuicon/anesthesiology.png"
+    },
+    {
+      "code": "10",
+      "pCode": "00",
+      "text": "Obstetrics ＆ Gynecology",
+      "icon": "/img/renewal/memuicon/ob-gyn.png"
+    },
+    {
+      "code": "11",
+      "pCode": "00",
+      "text": "Pediatrics",
+      "icon": "/img/renewal/memuicon/pediatric.png",
+      "sub": [
+        {
+          "code": "11",
+          "pCode": "00",
+          "text": "Pediatrics",
+          "icon": "/img/renewal/memuicon/pediatric.png"
+        },
+        {
+          "code": "11",
+          "pCode": "01",
+          "text": "Pediatric endocrinology"
+        },
+        {
+          "code": "11",
+          "pCode": "02",
+          "text": "Pediatric Nephrology"
+        },
+        {
+          "code": "11",
+          "pCode": "03",
+          "text": "Pediatric Pulmonology Allergy"
+        },
+        {
+          "code": "11",
+          "pCode": "04",
+          "text": "Pediatric Neurology"
+        },
+        {
+          "code": "11",
+          "pCode": "05",
+          "text": "Pediatric Gastroenterology"
+        },
+        {
+          "code": "11",
+          "pCode": "06",
+          "text": "Pediatric Critical Care Medicine"
+        },
+        {
+          "code": "11",
+          "pCode": "07",
+          "text": "General Pediatrics"
+        },
+        {
+          "code": "11",
+          "pCode": "08",
+          "text": "Pediatric Hemato Oncology"
+        },
+        {
+          "code": "11",
+          "pCode": "09",
+          "text": "Pediatric Cardiology"
+        },
+        {
+          "code": "11",
+          "pCode": "10",
+          "text": "Pediatric Infection Immunity"
+        },
+        {
+          "code": "11",
+          "pCode": "11",
+          "text": "Neonate"
+        },
+        {
+          "code": "11",
+          "pCode": "12",
+          "text": "Pediatric Psychiatry"
+        },
+        {
+          "code": "11",
+          "pCode": "13",
+          "text": "Pediatric Surgery"
+        },
+        {
+          "code": "11",
+          "pCode": "14",
+          "text": "Pediatric Cardiac Surgery"
+        },
+        {
+          "code": "11",
+          "pCode": "15",
+          "text": "Pediatric Orthopedic Surgery"
+        },
+        {
+          "code": "11",
+          "pCode": "16",
+          "text": "Pediatric Neurosurgery"
+        },
+        {
+          "code": "11",
+          "pCode": "17",
+          "text": "Pediatric Urology"
+        },
+        {
+          "code": "11",
+          "pCode": "18",
+          "text": "Pediatric Rehabilitation Medicine"
+        },
+        {
+          "code": "11",
+          "pCode": "19",
+          "text": "Pediatric Radiology"
+        },
+        {
+          "code": "11",
+          "pCode": "20",
+          "text": "Childhood Asthma Atopy Center"
+        },
+        {
+          "code": "11",
+          "pCode": "21",
+          "text": "Genetics"
+        },
+        {
+          "code": "11",
+          "pCode": "22",
+          "text": "General Pediatrics"
+        }
+      ]
+    },
+    {
+      "code": "12",
+      "pCode": "00",
+      "text": "Ophthalmology",
+      "icon": "/img/renewal/memuicon/ophthalmology.png"
+    },
+    {
+      "code": "13",
+      "pCode": "00",
+      "text": "Otorhinolaryngology",
+      "icon": "/img/renewal/memuicon/otolaryngology.png"
+    },
+    {
+      "code": "14",
+      "pCode": "00",
+      "text": "Dermatology",
+      "icon": "/img/renewal/memuicon/dermatology.png"
+    },
+    {
+      "code": "15",
+      "pCode": "00",
+      "text": "Urology",
+      "icon": "/img/renewal/memuicon/urology.png"
+    },
+    {
+      "code": "16",
+      "pCode": "00",
+      "text": "Radiology",
+      "icon": "/img/renewal/memuicon/radiology.png"
+    },
+    {
+      "code": "17",
+      "pCode": "00",
+      "text": "Radiation Oncology",
+      "icon": "/img/renewal/memuicon/radiation.png"
+    },
+    {
+      "code": "18",
+      "pCode": "00",
+      "text": "Pathology",
+      "icon": "/img/renewal/memuicon/pathology.png"
+    },
+    {
+      "code": "19",
+      "pCode": "00",
+      "text": "Laboratory medicine",
+      "icon": "/img/renewal/memuicon/diagnostic.png"
+    },
+    {
+      "code": "20",
+      "pCode": "00",
+      "text": "Tuberculosis",
+      "icon": "/img/renewal/memuicon/tuberculosis.png"
+    },
+    {
+      "code": "21",
+      "pCode": "00",
+      "text": "Rehabilitation medicine",
+      "icon": "/img/renewal/memuicon/rehabilitation.png"
+    },
+    {
+      "code": "22",
+      "pCode": "00",
+      "text": "Nuclear Medicine",
+      "icon": "/img/renewal/memuicon/nuclear.png"
+    },
+    {
+      "code": "23",
+      "pCode": "00",
+      "text": "Family medicine",
+      "icon": "/img/renewal/memuicon/family.png"
+    },
+    {
+      "code": "24",
+      "pCode": "00",
+      "text": "Emergency Medicine",
+      "icon": "/img/renewal/memuicon/emergency.png"
+    },
+    {
+      "code": "25",
+      "pCode": "00",
+      "text": "Occupational and Environmental medicine",
+      "icon": "/img/renewal/memuicon/occupational.png"
+    },
+    {
+      "code": "26",
+      "pCode": "00",
+      "text": "Preventive Medicine",
+      "icon": "/img/renewal/memuicon/preventive.png"
+    },
+    {
+      "code": "27",
+      "pCode": "00",
+      "text": "Health medicine",
+      "icon": "/img/renewal/memuicon/health.png"
+    },
+    {
+      "code": "28",
+      "pCode": "00",
+      "text": "Biomedical Engineering",
+      "icon": "/img/renewal/memuicon/engineering.png"
+    },
+    {
+      "code": "29",
+      "pCode": "00",
+      "text": "Clinical Pharmacology & Therapeutic",
+      "icon": "/img/renewal/memuicon/pharmacology.png"
+    }
+  ]
+}

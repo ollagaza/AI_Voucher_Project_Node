@@ -22,7 +22,7 @@ routes.post('/', Wrap(async (req, res) => {
   req.accepts('application/json')
   try{
     const member_info = await AuthService.login(DBMySQL, req)
-    const output = await Auth.getTokenResult(res, member_info, member_info.used_admin !== 'A' ? Role.MEMBER : Role.ADMIN)
+    const output = await Auth.getTokenResult(req, res, member_info, member_info.used_admin !== 'A' ? Role.MEMBER : Role.ADMIN)
 
     await MemberLogService.createMemberLog(req,  member_info.seq, '0000', 'login')
     return res.json(output)
@@ -36,14 +36,20 @@ routes.post('/', Wrap(async (req, res) => {
   }
 }))
 
+routes.post('/cookie/refresh', Wrap(async (req, res) => {
+  return res.json(await AuthService.authByCookie(req, res))
+}))
+
 routes.post('/token/refresh', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const token_info = req.token_info
-  const member_seq = token_info.getId()
+  // const token_info = req.token_info
+  // const member_seq = token_info.getId()
+  //
+  // const member_info = await MemberService.getMemberInfo(DBMySQL, member_seq)
+  //
+  // const output = await Auth.getTokenResult(req, res, member_info, member_info.used_admin !== 'A' ? Role.MEMBER : Role.ADMIN)
+  // return res.json(output)
 
-  const member_info = await MemberService.getMemberInfo(DBMySQL, member_seq)
-
-  const output = await Auth.getTokenResult(res, member_info, member_info.used_admin !== 'A' ? Role.MEMBER : Role.ADMIN)
-  return res.json(output)
+  return res.json(await AuthService.authByToken(req, res))
 }))
 
 routes.get('/logout', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {

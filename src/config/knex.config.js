@@ -6,7 +6,7 @@ export default {
       port: 3307,
       database: 'ai_voucher',
       user: 'root',
-      password: '1111',
+      password: '1234',
       timezone: 'UTC'
     },
     pool: {

@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "jiin",
+      "name": "aivoucher",
       "script": "nodemon src/index.dev.js --exec \"node -r dotenv/config -r babel-register\"",
       "watch": false,
       "env": {

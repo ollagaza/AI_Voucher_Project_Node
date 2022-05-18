@@ -6,7 +6,7 @@ import StdObject from '../../wrapper/std-object'
 import DBMySQL from '../../database/knex-mysql'
 import Util from '../../utils/Util'
 import ServiceConfig from '../../service/service-config'
-import GroupService from '../../service/group/GroupService'
+// import GroupService from '../../service/group/GroupService'
 import ContactUsService from '../../service/etc/ContactUsService'
 import EditorService from '../../service/etc/EditorService'
 import SendMailService from "../../service/etc/SendMailService";
@@ -15,7 +15,7 @@ const routes = Router()
 
 routes.get('/sendmaillist', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   try {
-    const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
+    // const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
     const result = await SendMailService.getSendMailPagingList(DBMySQL, group_seq, req)
     const output = new StdObject()
     output.adds(result)
@@ -27,7 +27,7 @@ routes.get('/sendmaillist', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (r
 
 routes.get('/getsendmail/:mail_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   try {
-    const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
+    // const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
     const mail_seq = req.params.mail_seq
     const result = await SendMailService.getSendMailOne(DBMySQL, mail_seq)
     const output = new StdObject()
@@ -40,7 +40,7 @@ routes.get('/getsendmail/:mail_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER)
 
 routes.delete('/sendmail', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   try {
-    await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
+    // await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
     const mail_seq = req.body
     const output = new StdObject();
     for (let cnt = 0; cnt < Object.keys(mail_seq).length; cnt++) {
@@ -55,7 +55,7 @@ routes.delete('/sendmail', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (re
 
 routes.get('/sendmail/:mail_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   try {
-    const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
+    // const { group_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
     const mail_seq = req.params.mail_seq
     const result = await SendMailService.sendMail(DBMySQL, mail_seq)
     res.json(result)
@@ -66,7 +66,7 @@ routes.get('/sendmail/:mail_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), W
 
 routes.post('/upload_mail', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   try {
-    const { group_seq, member_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
+    // const { group_seq, member_seq } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, false)
     const mail_params = req.body;
     mail_params.group_seq = group_seq;
     mail_params.member_seq = member_seq;
@@ -93,7 +93,7 @@ routes.put('/editorimage/:contentid', Auth.isAuthenticated(Role.LOGIN_USER), Wra
   try {
     const token_info = req.token_info
     const group_seq = token_info.getGroupSeq()
-    const group_info = await GroupService.getGroupInfo(DBMySQL, group_seq)
+    // const group_info = await GroupService.getGroupInfo(DBMySQL, group_seq)
     const output = new StdObject()
     const result = await EditorService.uploadEditorImage(group_info.media_path, req, res)
     output.add('result', result)
@@ -109,7 +109,7 @@ routes.put('/editorimage2/:contentid', Wrap(async (req, res) => {
   try {
     const token_info = req.token_info
     // const group_seq = token_info.getGroupSeq()
-    const group_info = await GroupService.getGroupInfo(DBMySQL, 3)
+    // const group_info = await GroupService.getGroupInfo(DBMySQL, 3)
     const output = new StdObject()
     const result = await EditorService.uploadEditorImage(group_info.media_path, req, res)
     output.add('result', result)
@@ -124,7 +124,7 @@ routes.put('/editor/file/:contentid', Auth.isAuthenticated(Role.LOGIN_USER), Wra
   try {
     const token_info = req.token_info
     const group_seq = token_info.getGroupSeq()
-    const group_info = await GroupService.getGroupInfo(DBMySQL, group_seq)
+    // const group_info = await GroupService.getGroupInfo(DBMySQL, group_seq)
     const output = new StdObject()
     const { url, upload_file_info } = await EditorService.uploadEditorFile(group_info.media_path, req, res)
     output.add('result', upload_file_info)

@@ -7,7 +7,7 @@ import _ from 'lodash'
 import xml2js from 'xml2js'
 import aes256 from 'nodejs-aes256'
 import base64url from 'base64-url'
-// import uuidv1 from 'uuid/v1'
+import { v1 as uuidv1 } from 'uuid'
 import http from 'http'
 import https from 'https'
 import path from 'path'
@@ -1539,9 +1539,9 @@ export default {
 
   'getXmlText': getXmlText,
 
-  // 'getContentId': () => {
-  //   return uuidv1()
-  // },
+  'getContentId': () => {
+    return uuidv1()
+  },
 
   'getXmlToJson': (xml) => {
     return new Promise((resolve, reject) => {

@@ -53,31 +53,17 @@ routes.post('/:member_seq(\\d+)/updateUser', async (req, res) => {
   }
 });
 
-routes.get('/:member_seq(\\d+)/data', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const token_info = req.token_info
-  const member_seq = Util.parseInt(req.params.member_seq)
-  if (!MemberService.checkMyToken(token_info, member_seq)) {
-    throw new StdObject(-1, '잘못된 요청입니다.', 403)
-  }
-
-  // const user_data = await MemberService.getMemberMetadata(member_seq)
-  const user_data = {data:"data"}
-  const output = new StdObject()
-  output.add('user_data', user_data)
-  res.json(output)
-}))
-
 routes.get('/me', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   req.accepts('application/json')
   const lang = Auth.getLanguage(req)
   const token_info = req.token_info
   const member_seq = token_info.getId()
-  const group_seq = token_info.getGroupSeq()
-  const member_info = await MemberService.getMemberInfoWithSub(DBMySQL, member_seq, lang)
+  // const group_seq = token_info.getGroupSeq()
+  const member_info = await MemberService.getMemberInfo(DBMySQL, member_seq, lang)
 
   const output = new StdObject()
-  output.add('member_info', member_info.member_info)
-  output.add('member_sub_info', member_info.member_sub_info)
+  output.add('member_info', member_info)
+  // output.add('member_sub_info', member_info.member_sub_info)
 
   res.json(output)
 }))
@@ -124,6 +110,63 @@ routes.post('/changePassword/:member_seq', Auth.isAuthenticated(Role.DEFAULT), W
   output.add('is_change', is_change)
   res.json(output)
 }))
+
+routes.get('/list', Auth.isAuthenticated(Role.ADMIN), Wrap(async (req, res) => {
+  req.accepts('application/json')
+  const lang = Auth.getLanguage(req)
+  const token_info = req.token_info
+  const search_keyword = req.query.search_keyword
+  // const group_seq = token_info.getGroupSeq()
+  const member_info = await MemberService.getMemberList(DBMySQL, req, search_keyword, lang)
+  // const output = new StdObject()
+  // output.add('member_info', member_info)
+  // res.json(output)
+
+  const output = new StdObject()
+  output.adds(member_info)
+  res.json(output)
+}))
+
+routes.get('/:member_seq(\\d+)/data', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
+  const token_info = req.token_info
+  const member_seq = Util.parseInt(req.params.member_seq)
+  if (!MemberService.checkMyToken(token_info, member_seq)) {
+    throw new StdObject(-1, '잘못된 요청입니다.', 403)
+  }
+
+  const user_data = await MemberService.getMemberInfoWithModel(DBMySQL, member_seq)
+  // const user_data = {data:"data"}
+  const output = new StdObject()
+  output.add('user_data', user_data.member_info)
+  res.json(output)
+}))
+
+
+routes.post('/setused',  Auth.isAuthenticated(Role.ADMIN), Wrap(async (req, res) => {
+  req.accepts('application/json')
+
+  const req_body = req.body ? req.body : {};
+  const output = new StdObject(0, 'data', 200);
+  const result = await MemberService.updateUsersUsed(DBMySQL, req_body);
+
+  const token_info = req.token_info
+  const mod_member_seq = token_info.id
+
+  let seq = ''
+  for (const key of Object.keys(req.body.params.users)) {
+    seq += `${req.body.params.users[key]}/`;
+  }
+  seq += `used change=${req.body.params.used}`
+
+  MemberLogService.createMemberLog(req, mod_member_seq, '1002', `${ seq }`);
+
+  if (result.error !== 0){
+    output.error = result.error
+    output.message = result.message
+  }
+  res.json(output)
+}));
+
 
 
 export default routes

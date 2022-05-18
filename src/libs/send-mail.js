@@ -53,7 +53,7 @@ export default class SendMail {
       // logger.debug(request_options);
       const mail_info = {
         'senderAddress': 'no_reply@surgstory.com',
-        'senderName': '지인',
+        'senderName': 'AIVOUCHER',
         'title': title,
         'body': body,
         'recipients': this.getRecipients(mail_to_list)

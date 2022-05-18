@@ -7,7 +7,7 @@ const create_user_form = `
 	<div style="width: 430px;background: #fff;border-top: 10px solid #3061a5;border-bottom: 1px solid #3061a5;margin: auto;">
         <h1 style="width: 430px;text-align: center;border-bottom: 1px solid #999;color: #7fa2d3;margin: auto;padding: 20px 0;">{service_name} 인증메일</h1>
         <p style="width: 430px;font-size: 14px;color: #7fa2d3;margin: 30px 0;text-align: center;line-height: 24px;">{user_name} 회원님, 안녕하세요.<br><br>
-지인 계정을 등록해 주셔서 감사합니다. <br>
+A.I 바우쳐 플랫폼 계정을 등록해 주셔서 감사합니다. <br>
 계정을 활성화하려면 확인버튼을 클릭하세요.<br>
 확인 버튼을 클릭해도 아무 반응이 없으면 링크를 복사해 <br>
 브라우저 주소 입력 창에 붙여 넣거나 직접 입력해 주세요.<br>

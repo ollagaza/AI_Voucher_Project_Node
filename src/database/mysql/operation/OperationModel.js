@@ -14,10 +14,10 @@ const join_select = [
   'operation_storage.index2_file_count', 'operation_storage.origin_video_count',
   'operation_storage.trans_video_size', 'operation_storage.trans_video_count', 'operation_storage.operation_file_size', 'operation_storage.operation_file_count',
   'operation_storage.refer_file_size', 'operation_storage.refer_file_count', 'operation_storage.origin_video_size',
-  'operation_data.video_download', 'operation_data.file_download', 'operation_data.total_time', 'operation_data.thumbnail', 'operation_data.anno_count', 'operation_data.comment_count'
+  'operation_data.video_download', 'operation_data.file_download', 'operation_data.total_time', 'operation_data.thumbnail', 'operation_data.anno_count', 'operation_data.comment_count', 'operation_data.is_open_video'
 ]
 const join_trash_select = _.concat(join_select, ['delete_member.user_name as delete_user_name', 'delete_member.user_nickname as delete_user_nickname'])
-const join_admin_select = _.concat(join_select, ['group_info.group_name'])
+const join_admin_select = _.concat(join_select, ['member.used_admin'])
 const join_search_select = [
   'operation.*', 'member.user_id', 'member.user_name', 'member.user_nickname', 'operation_storage.seq as storage_seq',
   'operation_storage.total_file_size', 'operation_storage.total_file_count', 'operation_storage.clip_count',
@@ -62,51 +62,56 @@ export default class OperationModel extends MySQLModel {
     return await this.getOperation(where, import_media_info)
   }
 
-  getOperationInfoListPage = async (group_seq, member_seq, group_grade_number = null, is_group_admin = false, page_params = {}, filter_params = {}, order_params = {}, is_admin = false, operation_data_seq_list = [], is_agent = false) => {
+  getOperationInfoListPage = async (member_seq, page_params = {}, filter_params = {}, order_params = {}, is_admin = false, operation_data_seq_list = [], is_agent = false) => {
     const page = page_params.page ? page_params.page : 1
     const list_count = page_params.list_count ? page_params.list_count : 20
     const page_count = page_params.page_count ? page_params.page_count : 10
 
-    const is_trash = filter_params.menu === 'trash'
-    let select_fields = is_admin ? join_admin_select : (is_trash ? join_trash_select : join_select)
+    const is_trash = Util.isTrue(filter_params.menu === 'trash')
+    is_admin = Util.isTrue(is_admin)
+
+    console.log(`is_admin====${is_admin}`)
+    console.log(`is_trash====${is_trash}`)
+    let select_fields = Util.isTrue(is_admin) ? join_admin_select : (Util.isTrue(is_trash) ? join_trash_select : join_select)
+    console.log(`select_fields====${select_fields}`)
     const query = this.database.select(select_fields)
     query.from('operation')
     query.innerJoin('operation_data', 'operation_data.operation_seq', 'operation.seq')
     query.innerJoin('member', 'member.seq', 'operation.member_seq')
-    if (is_admin) {
-      query.innerJoin('group_info', 'group_info.seq', 'operation.group_seq')
-    }
+    // if (is_admin) {
+    //   query.innerJoin('group_info', 'group_info.seq', 'operation.group_seq')
+    // }
     query.leftOuterJoin('operation_storage', 'operation_storage.operation_seq', 'operation.seq')
-    query.leftOuterJoin('operation_folder', 'operation.folder_seq', 'operation_folder.seq')
+    // query.leftOuterJoin('operation_folder', 'operation.folder_seq', 'operation_folder.seq')
     if (!is_admin) {
       if (is_trash) {
         query.joinRaw('LEFT OUTER JOIN `member` AS delete_member ON delete_member.seq = operation.delete_member_seq')
       }
-      query.where('operation.group_seq', group_seq)
-      if (!is_trash && !is_group_admin) {
-        query.where(
-          this.database.raw(`
-            IF (
-              operation_folder.is_access_way IS NULL,
-                true,
-                IF (
-                  operation_folder.is_access_way = 0,
-                    (
-                      CASE
-                        WHEN operation_folder.access_type IS NULL THEN 1
-                        WHEN operation_folder.access_type = 'A' THEN 99
-                        WHEN operation_folder.access_type = 'O' THEN 99
-                        ELSE operation_folder.access_type
-                      END
-                    ) <= ?,
-                    JSON_EXTRACT(operation_folder.access_list, '$.read."?"') = true
-                )
-            )
-          `, [group_grade_number, group_grade_number])
-        )
-      }
-    } else if (filter_params.group_seq) {
-      query.where('operation.group_seq', filter_params.group_seq)
+      // query.where('operation.group_seq', group_seq)
+      // if (!is_trash && !is_group_admin) {
+      //   query.where(
+      //     this.database.raw(`
+      //       IF (
+      //         operation_folder.is_access_way IS NULL,
+      //           true,
+      //           IF (
+      //             operation_folder.is_access_way = 0,
+      //               (
+      //                 CASE
+      //                   WHEN operation_folder.access_type IS NULL THEN 1
+      //                   WHEN operation_folder.access_type = 'A' THEN 99
+      //                   WHEN operation_folder.access_type = 'O' THEN 99
+      //                   ELSE operation_folder.access_type
+      //                 END
+      //               ) <= ?,
+      //               JSON_EXTRACT(operation_folder.access_list, '$.read."?"') = true
+      //           )
+      //       )
+      //     `, [group_grade_number, group_grade_number])
+      //   )
+      // }
+    // } else if (filter_params.group_seq) {
+      // query.where('operation.group_seq', filter_params.group_seq)
     }
     if (filter_params.status) {
       query.andWhere('operation.status', filter_params.status.toUpperCase())
@@ -116,54 +121,65 @@ export default class OperationModel extends MySQLModel {
       query.limit(filter_params.limit)
     }
 
-    let check_folder = true
+    // is_admin = Util.isTrue(is_admin);
+    // is_admin = Util.isFalse(is_admin);
     const recent_timestamp = Util.addDay(-(Util.parseInt(filter_params.day, 7)), Constants.TIMESTAMP)
     switch (filter_params.menu) {
       case 'open':
         query.andWhere('operation.status', 'Y')
         query.andWhere('operation.analysis_status', 'Y')
         query.andWhere('operation_data.is_open_video', 1)
-        check_folder = false
         break
-      case 'recent':
-        query.andWhere('operation.reg_date', '>=', recent_timestamp)
-        query.andWhere('operation.status', 'Y')
-        check_folder = false
-        break
-      case 'favorite':
-        query.andWhere('operation.is_favorite', 1)
-        query.andWhere('operation.status', 'Y')
-        check_folder = false
-        break
+      // case 'recent':
+      //   query.andWhere('operation.reg_date', '>=', recent_timestamp)
+      //   query.andWhere('operation.status', 'Y')
+      //   break
+      // case 'favorite':
+      //   query.andWhere('operation.is_favorite', 1)
+      //   query.andWhere('operation.status', 'Y')
+      //   break
       case 'trash':
         query.andWhere('operation.status', 'T')
-        check_folder = false
+        if(Util.isFalse(is_admin)) {
+          query.andWhere('operation.member_seq', member_seq)
+        }
         break
-      case 'clip':
-        query.andWhere('operation.status', 'Y')
-        check_folder = false
-        break
+      // case 'clip':
+      //   query.andWhere('operation.status', 'Y')
+      //   break
       case 'drive':
         query.andWhere('operation.status', 'Y')
+        // console.log(`is_admin=======${is_admin}`, is_admin);
+        if(Util.isFalse(is_admin)) {
+          query.andWhere(function () {
+            this
+              .where('operation_data.is_open_video', 1)
+              .orWhere('operation.member_seq', member_seq)
+          })
+        }
+        // query.andWhere(function () {
+        //   this
+        //     .where('operation_data.is_open_video', 1)
+        //     .orWhere('operation.member_seq', member_seq)
+        // })
         break
-      case 'collect':
-        query.andWhere('operation.status', 'Y')
-        check_folder = true
-        break
+      // case 'collect':
+      //   query.andWhere('operation.status', 'Y')
+      //   break
       default:
         query.andWhere('operation.status', 'Y')
-        check_folder = false
         break
     }
     if (!is_admin) {
       if (!is_trash) {
         query.andWhere((builder) => {
           builder.whereNull('operation.folder_seq')
-          builder.orWhere('operation_folder.status', 'Y')
+          // builder.orWhere('operation_folder.status', 'Y')
         })
-      } else if (!is_group_admin) {
-        query.andWhere('operation.member_seq', member_seq)
       }
+      // else if (!is_group_admin) {
+      //   query.andWhere('operation.member_seq', member_seq)
+      // }
     }
 
     if (filter_params.member_seq) {
@@ -180,7 +196,6 @@ export default class OperationModel extends MySQLModel {
         if (is_admin) {
           builder.orWhere('member.user_name', 'like', `%${filter_params.search_keyword}%`)
           builder.orWhere('member.user_id', 'like', `%${filter_params.search_keyword}%`)
-          builder.orWhere('group_info.group_name', 'like', `%${filter_params.search_keyword}%`)
         } else {
           if (filter_params.use_user_name) {
             builder.orWhere('member.user_name', 'like', `%${filter_params.search_keyword}%`)
@@ -192,14 +207,6 @@ export default class OperationModel extends MySQLModel {
           builder.orWhereIn('operation_data.seq', operation_data_seq_list)
         }
       })
-    } else if (check_folder) {
-      if (filter_params.folder_seq) {
-        if (filter_params.folder_seq !== 'all') {
-          query.andWhere('operation.folder_seq', Util.parseInt(filter_params.folder_seq, null))
-        }
-      } else {
-        query.whereNull('operation.folder_seq')
-      }
     }
 
     const order_by = { name: 'operation.seq', direction: 'DESC' }
@@ -316,15 +323,12 @@ export default class OperationModel extends MySQLModel {
     await this.delete({ 'seq': operation_seq })
   }
 
-  updateStatusTrash = async (operation_seq_list, status, is_delete_by_admin, delete_member_seq, folder_info = null) => {
+  updateStatusTrash = async (operation_seq_list, status, is_delete_by_admin, delete_member_seq) => {
     const update_params = {
       status,
       is_delete_by_admin: is_delete_by_admin ? 1 : 0,
       delete_member_seq,
       'modify_date': this.database.raw('NOW()')
-    }
-    if (folder_info) {
-      update_params.folder_seq = folder_info.seq
     }
     let filters = null
     return this.updateIn('seq', operation_seq_list, update_params, filters)
@@ -379,7 +383,7 @@ export default class OperationModel extends MySQLModel {
   }
 
   getOperationInfoByContentId = async (content_id) => {
-    const where = { 'content_id': content_id }
+    const where = { 'operation.content_id': content_id }
     return await this.getOperation(where, false)
   }
 
@@ -507,11 +511,10 @@ export default class OperationModel extends MySQLModel {
     log.debug(this.log_prefix, '[getOperationListInFolderSeqList]', group_seq, folder_seq_list, status, params)
     return this.find(params)
   }
-  getOperationListInSeqList = async (group_seq, seq_list) => {
+  getOperationListInSeqList = async (seq_list) => {
     const params = {
       is_new: true,
       query: [
-        { group_seq },
         { seq: _.concat(['in'], seq_list) }
       ]
     }

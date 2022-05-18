@@ -1,5 +1,5 @@
 import Role from '../constants/roles'
-import Util from '../utils/baseutil'
+import Util from '../utils/Util'
 
 export default class TokenInfo {
   constructor (token_info, token, expire_time) {
