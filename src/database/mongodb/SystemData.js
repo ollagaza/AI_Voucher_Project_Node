@@ -23,12 +23,12 @@ default_data[data_types.SITE_INFO] = {
   top_logo_url: null,
   site_name: null,
   main_bg_url: null,
-  channel_left_menu: {
-    drive: { visible: true },
-    // studio: { visible: true },
-    // board: { visible: true },
-    // curriculum: { visible: true },
-  }
+  // channel_left_menu: {
+  //   drive: { visible: true },
+  //   studio: { visible: true },
+  //   board: { visible: true },
+  //   curriculum: { visible: true },
+  // }
 }
 
 const schema_field_infos = getFieldInfos()

@@ -68,7 +68,7 @@ const OperationServiceClass = class {
   //   const output = new StdObject()
   //   let is_success = false
   //   if (!request_body || !request_body.operation_info) {
-  //     throw new StdObject(-2, '수술 정보가 없습니다.', 500)
+  //     throw new StdObject(-2, '동영상 정보가 없습니다.', 500)
   //   }
   //   const operation_code = Util.trim(request_body.operation_info.operation_code)
   //   const age = Util.parseInt(request_body.operation_info.patient_age, null)
@@ -80,7 +80,7 @@ const OperationServiceClass = class {
   //
   //   const input_operation_data = new OperationInfo().getByRequestBody(request_body.operation_info)
   //   if (input_operation_data.isEmpty()) {
-  //     throw new StdObject(-1, '수술 정보가 없습니다.', 500)
+  //     throw new StdObject(-1, '동영상 정보가 없습니다.', 500)
   //   }
   //   const operation_info = input_operation_data.toJSON()
   //   const content_id = Util.getContentId()
@@ -98,7 +98,7 @@ const OperationServiceClass = class {
   //   const operation_model = new OperationModel(database)
   //   await operation_model.createOperation(operation_info)
   //   if (!operation_info || !operation_info.seq) {
-  //     throw new StdObject(-1, '수술정보 입력에 실패하였습니다.', 500)
+  //     throw new StdObject(-1, '동영상정보 입력에 실패하였습니다.', 500)
   //   }
   //   const operation_seq = operation_info.seq
   //   output.add('operation_info', operation_info)
@@ -145,12 +145,12 @@ const OperationServiceClass = class {
   //   return output
   // }
 
-  // 수술영상 등록 by djyu
+  // 동영상영상 등록 by djyu
   createOperation = async (database, member_info, request_body, status = null, export_from_project = false) => {
     const output = new StdObject()
     let is_success = false
     if (!request_body || !request_body.operation_info) {
-      throw new StdObject(-2, '수술 정보가 없습니다.', 500)
+      throw new StdObject(-2, '동영상 정보가 없습니다.', 500)
     }
     const operation_code = Util.trim(request_body.operation_info.operation_code)
     const age = Util.parseInt(request_body.operation_info.patient_age, null)
@@ -162,7 +162,7 @@ const OperationServiceClass = class {
 
     const input_operation_data = new OperationInfo().getByRequestBody(request_body.operation_info)
     if (input_operation_data.isEmpty()) {
-      throw new StdObject(-1, '수술 정보가 없습니다.', 500)
+      throw new StdObject(-1, '동영상 정보가 없습니다.', 500)
     }
     const operation_info = input_operation_data.toJSON()
     const content_id = Util.getContentId()
@@ -179,11 +179,30 @@ const OperationServiceClass = class {
       operation_info.status = status
     }
 
+    // 유저 사용 가능 용량 체크..
+    let storage_size = 0
+    let user_storage_size = Number(Util.removeString(member_info.storage_name))
+    const used_storage_size = Number(member_info.used_storage_size)
+    if (member_info.storage_name.indexOf('MB') > -1) {
+      storage_size = 1024 * 1024 * user_storage_size
+    } else if (member_info.storage_name.indexOf('GB') > -1) {
+      storage_size = 1024 * 1024 * 1024 * user_storage_size
+    } else if (member_info.storage_name.indexOf('TB') > -1) {
+      storage_size = 1024 * 1024 * 1024 * 1024 * user_storage_size
+    }
+
+    // console.log(used_storage_size)
+    // console.log(storage_size)
+    if(used_storage_size >= storage_size) {
+      throw new StdObject(-1, '업로드 가능한 용량을 초과하였습니다.  관리자에 문의 부탁드립니다.', 500)
+    }
+
     const operation_model = new OperationModel(database)
     await operation_model.createOperation(operation_info)
     if (!operation_info || !operation_info.seq) {
-      throw new StdObject(-1, '수술정보 입력에 실패하였습니다.', 500)
+      throw new StdObject(-1, '동영상 정보 입력에 실패하였습니다.', 500)
     }
+
     const operation_seq = operation_info.seq
     output.add('operation_info', operation_info)
 
@@ -325,7 +344,7 @@ const OperationServiceClass = class {
 
       await operation_model.createOperation(operation_info)
       if (!operation_info || !operation_info.seq) {
-        throw new StdObject(-1, '수술정보 복사에 실패하였습니다.', 500)
+        throw new StdObject(-1, '동영상정보 복사에 실패하였습니다.', 500)
       }
       operation_seq = operation_info.seq
       operation_info.operation_seq = operation_info.seq
@@ -723,7 +742,7 @@ const OperationServiceClass = class {
     const { operation_info } = await this.getOperationInfoNoAuth(database, operation_seq, false)
 
     if (!operation_info || operation_info.isEmpty()) {
-      throw new StdObject(-1, '수술 정보가 존재하지 않습니다.', 400)
+      throw new StdObject(-1, '동영상 정보가 존재하지 않습니다.', 400)
     }
     if (check_owner) {
       if (!token_info) {
@@ -1000,10 +1019,10 @@ const OperationServiceClass = class {
             member_seq: member_info.seq
           }
           const name = member_info.user_name
-          const alarm_message = `'${name}'님이 '${operation_info.operation_name}'수술을 등록했습니다.`
+          const alarm_message = `'${name}'님이 '${operation_info.operation_name}'동영상을 등록했습니다.`
 
           const socket_message = {
-            title: `'${name}'님이 '${operation_info.operation_name}'수술을 등록했습니다.`,
+            title: `'${name}'님이 '${operation_info.operation_name}'동영상을 등록했습니다.`,
           }
           const socket_data = {
             operation_seq: operation_info.seq,
@@ -1214,7 +1233,7 @@ const OperationServiceClass = class {
   getOperationDataInfo = async (operation_seq, group_seq, options = null) => {
     const { operation_info } = await this.getOperationInfoNoAuth(DBMySQL, operation_seq, options ? options.import_media_info : false)
     if (!operation_info || operation_info.isEmpty()) {
-      throw new StdObject(-1, '등록된 수술이 없습니다.', 400)
+      throw new StdObject(-1, '등록된 동영상이 없습니다.', 400)
     }
     let operation_data_info = await OperationDataService.getOperationDataByOperationSeq(DBMySQL, operation_seq)
     if (!operation_data_info || operation_data_info.isEmpty()) {
@@ -1489,13 +1508,13 @@ const OperationServiceClass = class {
   isOperationActive = async (operation_seq, group_seq, is_group_admin, group_grade_number) => {
     const operation_info = await this.getOperationInfoNoJoin(null, operation_seq, true)
     if (!operation_info || Util.parseInt(operation_info.seq, 0) !== Util.parseInt(operation_seq, 0)) {
-      return new StdObject(51, '수술정보가 존재하지 않습니다.')
+      return new StdObject(51, '동영상정보가 존재하지 않습니다.')
     }
     if (operation_info.status === 'T') {
-      return new StdObject(52, '휴지통에 있는 수술은 확인이 불가능 합니다.')
+      return new StdObject(52, '휴지통에 있는 동영상은 확인이 불가능 합니다.')
     }
     if (operation_info.status === 'D') {
-      return new StdObject(53, '삭제된 수술입니다.')
+      return new StdObject(53, '삭제된 동영상입니다.')
     }
     const folder_seq = operation_info.folder_seq
     if (is_group_admin || !folder_seq) {
@@ -1521,7 +1540,7 @@ const OperationServiceClass = class {
   isOperationAbleRestore = async (operation_seq, group_seq, group_grade_number, is_group_admin) => {
     const operation_info = await this.getOperationInfoNoJoin(DBMySQL, operation_seq, true)
     if (!operation_info || operation_info.isEmpty()) {
-      throw new StdObject(1, '수술정보가 존재하지 않습니다.', 400)
+      throw new StdObject(1, '동영상정보가 존재하지 않습니다.', 400)
     }
     // if (!operation_info.folder_seq) {
     //   return true
@@ -1545,7 +1564,7 @@ const OperationServiceClass = class {
   getAgentFileList = async (operation_seq, query, member_seq) => {
     const { operation_info } = await this.getOperationInfoNoAuth(null, operation_seq)
     if (!operation_info || operation_info.isEmpty()) {
-      throw new StdObject(2011, '수술정보가 존재하지 않습니다.')
+      throw new StdObject(2011, '동영상정보가 존재하지 않습니다.')
     }
     const group_seq = operation_info.group_seq
     // const { is_group_admin } = await GroupService.checkGroupAuthBySeq(null, group_seq, member_seq, true, false, false)
@@ -1650,7 +1669,7 @@ const OperationServiceClass = class {
     }
     let analysis_status = operation_info.analysis_status
     if (operation_info.status !== 'Y') {
-      encoding_info.message = '이미 삭제된 수술입니다.'
+      encoding_info.message = '이미 삭제된 동영상입니다.'
       if (operation_info.status === 'T') {
         encoding_info.message = '휴지통에서 복구 후 작업 가능합니다.'
       }
@@ -1930,10 +1949,10 @@ const OperationServiceClass = class {
     const list_split_regex = /[^\d]+/i
     const seq_list = seq_list_text.split(list_split_regex)
     if (!seq_list || seq_list.length <= 0) {
-      throw new StdObject(2007, '수술 번호 목록이 비었습니다.', 200)
+      throw new StdObject(2007, '동영상 번호 목록이 비었습니다.', 200)
     }
     this.requestTranscodingByOperationSeqList(seq_list)
-    return new StdObject(0, `${seq_list.length}개의 수술 인코딩 요청이 시작되었습니다.`)
+    return new StdObject(0, `${seq_list.length}개의 동영상 인코딩 요청이 시작되었습니다.`)
   }
   requestTranscodingByOperationSeqList = (operation_seq_list) => {
     (

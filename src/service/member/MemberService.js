@@ -315,8 +315,13 @@ const MemberServiceClass = class {
       page,
       limit,
     }
+
+    const order_params = {}
+    order_params.field = request_query.order_fields
+    order_params.type = request_query.order_type
+
     // const { member_info } = await this.getMemberListWithModel(database, search_options, search_keyword)
-    const member_info = await member_model.getMemberList(search_options, search_keyword)
+    const member_info = await member_model.getMemberList(search_options, order_params, search_keyword)
     // if (member_info.isEmpty()) {
     //   throw new StdObject(-1, '회원정보가 존재하지 않습니다.', 400)
     // }

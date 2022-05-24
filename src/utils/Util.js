@@ -1376,11 +1376,16 @@ const pdfToImage = async (pdf_file_path, output_directory, prefix = 'Page', qual
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
+const removeString = (str) => {
+  const regex = /[^0-9]/g;
+  const result = str.replace(regex, "");
+  return result;
+}
 export default {
   getFileBuffer,
   getImageTags,
   isImageRotate,
+  removeString,
   removePathSlash,
   removePathLastSlash,
   'common_path_upload': multer({ storage: storate }),

@@ -70,10 +70,10 @@ export default class OperationModel extends MySQLModel {
     const is_trash = Util.isTrue(filter_params.menu === 'trash')
     is_admin = Util.isTrue(is_admin)
 
-    console.log(`is_admin====${is_admin}`)
-    console.log(`is_trash====${is_trash}`)
+    // console.log(`is_admin====${is_admin}`)
+    // console.log(`is_trash====${is_trash}`)
     let select_fields = Util.isTrue(is_admin) ? join_admin_select : (Util.isTrue(is_trash) ? join_trash_select : join_select)
-    console.log(`select_fields====${select_fields}`)
+    // console.log(`select_fields====${select_fields}`)
     const query = this.database.select(select_fields)
     query.from('operation')
     query.innerJoin('operation_data', 'operation_data.operation_seq', 'operation.seq')

@@ -54,26 +54,29 @@ const getBaseInfo = async (request, check_auth = false, check_writer = false, im
     clip_id,
     phase_id,
     operation_seq: null,
-    operation_info: null
+    operation_info: null,
+    token_info,
   }
 
-  if (api_type === 'mentoring') {
-    await getMentoringInfo(result, api_key)
-  } else if (api_type === 'link') {
-    await getLinkInfo(result, api_key)
-  } else if (api_type === 'drive') {
-    await getDriveInfo(result, api_key, check_folder_auth)
-  } else if (api_type === 'open_video') {
-    await getOpenVideoInfo(result, api_key)
-  } else if (api_type === 'admin') {
-    await getAdminInfo(result, api_key)
-  } else if (api_type === 'admin2') {
-    await getAdminInfo2(result, api_key)
-  } else if (api_type === 'open_channel') {
-    await getOpenChannelVideoInfo(result, api_key)
-  } else {
-    throw new StdObject(802, '잘못된 접근입니다.', 400)
-  }
+  await getDriveInfo(result, api_key)
+
+  // if (api_type === 'mentoring') {
+  //   await getMentoringInfo(result, api_key)
+  // } else if (api_type === 'link') {
+  //   await getLinkInfo(result, api_key)
+  // } else if (api_type === 'drive') {
+  //   await getDriveInfo(result, api_key, check_folder_auth)
+  // } else if (api_type === 'open_video') {
+  //   await getOpenVideoInfo(result, api_key)
+  // } else if (api_type === 'admin') {
+  //   await getAdminInfo(result, api_key)
+  // } else if (api_type === 'admin2') {
+  //   await getAdminInfo2(result, api_key)
+  // } else if (api_type === 'open_channel') {
+  //   await getOpenChannelVideoInfo(result, api_key)
+  // } else {
+  //   throw new StdObject(802, '잘못된 접근입니다.', 400)
+  // }
 
   if (import_operation_info && !result.operation_info) {
     result.operation_info = await OperationService.getOperationInfo(DBMySQL, result.operation_seq, null, false, true)
@@ -129,7 +132,7 @@ const getAdminInfo2 = async (result, operation_seq) => {
   }
 }
 
-const getDriveInfo = async (result, operation_seq, check_folder_auth = false) => {
+const getDriveInfo = async (result, operation_seq) => {
   const group_seq = result.group_seq
   const operation_info = await OperationService.getOperationInfo(DBMySQL, operation_seq, null, false, true)
   if (!operation_info || operation_info.isEmpty()) {
@@ -161,87 +164,87 @@ const getDriveInfo = async (result, operation_seq, check_folder_auth = false) =>
   }
 }
 
-const getLinkInfo = async (result, link_code) => {
-  const link_info = await OperationLinkService.getOperationLinkByCode(DBMySQL, link_code)
-  if (!link_info || link_info.isEmpty()) {
-    throw new StdObject(810, '등록된 정보가 없습니다.', 400)
-  }
-
-  const is_editor_link = link_info.auth === OperationLinkService.AUTH_WRITE
-  const is_download_link = link_info.enable_download === 1
-  result.operation_seq = link_info.operation_seq
-  result.link_info = link_info
-  result.link_code = link_code
-  result.is_writer = is_editor_link
-  result.is_auth = true
-  result.is_link = true
-  result.is_editor_link = is_editor_link
-  result.is_download_link = is_download_link
-}
-
-const getMentoringInfo = async (result, operation_data_seq) => {
-  const group_seq = result.group_seq
-  const operation_data_info = await OperationDataService.getOperationData(DBMySQL, operation_data_seq)
-  if (!operation_data_info || operation_data_info.isEmpty()) {
-    throw new StdObject(811, '등록된 정보가 없습니다.', 400)
-  }
-  if (operation_data_info.type !== 'M') {
-    throw new StdObject(812, '잘못된 접근입니다.', 403)
-  }
-
-  const is_writer = operation_data_info.group_seq === group_seq
-  const is_auth = operation_data_info.mento_group_seq === group_seq || operation_data_info.group_seq === group_seq
-
-  result.operation_seq = operation_data_info.operation_seq
-  result.operation_data_info = operation_data_info
-  result.operation_data_seq = operation_data_seq
-  result.is_writer = is_writer
-  result.is_auth = is_auth
-}
-
-const getOpenVideoInfo = async (result, operation_data_seq) => {
-  const group_seq = result.group_seq
-  const operation_data_info = await OperationDataService.getOperationData(DBMySQL, operation_data_seq)
-  if (!operation_data_info || operation_data_info.isEmpty()) {
-    throw new StdObject(813, '등록된 정보가 없습니다.', 400)
-  }
-  if (!operation_data_info.is_open_video) {
-    throw new StdObject(814, '잘못된 접근입니다.', 403)
-  }
-
-  const is_writer = operation_data_info.group_seq === group_seq
-
-  result.operation_seq = operation_data_info.operation_seq
-  result.operation_data_info = operation_data_info
-  result.operation_data_seq = operation_data_seq
-  result.is_writer = is_writer
-  result.is_auth = true
-}
-
-const getOpenChannelVideoInfo = async (result, api_key) => {
-  // const group_seq = result.group_seq
-  // const operation_data_info = await OperationDataService.getOperationData(DBMySQL, operation_data_seq)
-  // if (!operation_data_info || operation_data_info.isEmpty()) {
-  //   throw new StdObject(100, '등록된 정보가 없습니다.', 400)
-  // }
-  // if (!operation_data_info.is_open_video) {
-  //   throw new StdObject(-3, '잘못된 접근입니다.', 403)
-  // }
-  //
-  // const is_writer = operation_data_info.group_seq === group_seq
-  //
-  // result.operation_seq = operation_data_info.operation_seq
-  // result.operation_data_info = operation_data_info
-  // result.operation_data_seq = operation_data_seq
-  // result.is_writer = is_writer
-  // result.is_auth = true
-  //
-  // const operation_data_info = await OperationDataService.getOperationDataByOperationSeq(DBMySQL, operation_seq)
-  // if (operation_data_info && !operation_data_info.isEmpty()) {
-  //   result.operation_data_info = operation_data_info
-  //   result.operation_data_seq = operation_data_info.seq
-  // }
-}
+// const getLinkInfo = async (result, link_code) => {
+//   const link_info = await OperationLinkService.getOperationLinkByCode(DBMySQL, link_code)
+//   if (!link_info || link_info.isEmpty()) {
+//     throw new StdObject(810, '등록된 정보가 없습니다.', 400)
+//   }
+//
+//   const is_editor_link = link_info.auth === OperationLinkService.AUTH_WRITE
+//   const is_download_link = link_info.enable_download === 1
+//   result.operation_seq = link_info.operation_seq
+//   result.link_info = link_info
+//   result.link_code = link_code
+//   result.is_writer = is_editor_link
+//   result.is_auth = true
+//   result.is_link = true
+//   result.is_editor_link = is_editor_link
+//   result.is_download_link = is_download_link
+// }
+//
+// const getMentoringInfo = async (result, operation_data_seq) => {
+//   const group_seq = result.group_seq
+//   const operation_data_info = await OperationDataService.getOperationData(DBMySQL, operation_data_seq)
+//   if (!operation_data_info || operation_data_info.isEmpty()) {
+//     throw new StdObject(811, '등록된 정보가 없습니다.', 400)
+//   }
+//   if (operation_data_info.type !== 'M') {
+//     throw new StdObject(812, '잘못된 접근입니다.', 403)
+//   }
+//
+//   const is_writer = operation_data_info.group_seq === group_seq
+//   const is_auth = operation_data_info.mento_group_seq === group_seq || operation_data_info.group_seq === group_seq
+//
+//   result.operation_seq = operation_data_info.operation_seq
+//   result.operation_data_info = operation_data_info
+//   result.operation_data_seq = operation_data_seq
+//   result.is_writer = is_writer
+//   result.is_auth = is_auth
+// }
+//
+// const getOpenVideoInfo = async (result, operation_data_seq) => {
+//   const group_seq = result.group_seq
+//   const operation_data_info = await OperationDataService.getOperationData(DBMySQL, operation_data_seq)
+//   if (!operation_data_info || operation_data_info.isEmpty()) {
+//     throw new StdObject(813, '등록된 정보가 없습니다.', 400)
+//   }
+//   if (!operation_data_info.is_open_video) {
+//     throw new StdObject(814, '잘못된 접근입니다.', 403)
+//   }
+//
+//   const is_writer = operation_data_info.group_seq === group_seq
+//
+//   result.operation_seq = operation_data_info.operation_seq
+//   result.operation_data_info = operation_data_info
+//   result.operation_data_seq = operation_data_seq
+//   result.is_writer = is_writer
+//   result.is_auth = true
+// }
+//
+// const getOpenChannelVideoInfo = async (result, api_key) => {
+//   // const group_seq = result.group_seq
+//   // const operation_data_info = await OperationDataService.getOperationData(DBMySQL, operation_data_seq)
+//   // if (!operation_data_info || operation_data_info.isEmpty()) {
+//   //   throw new StdObject(100, '등록된 정보가 없습니다.', 400)
+//   // }
+//   // if (!operation_data_info.is_open_video) {
+//   //   throw new StdObject(-3, '잘못된 접근입니다.', 403)
+//   // }
+//   //
+//   // const is_writer = operation_data_info.group_seq === group_seq
+//   //
+//   // result.operation_seq = operation_data_info.operation_seq
+//   // result.operation_data_info = operation_data_info
+//   // result.operation_data_seq = operation_data_seq
+//   // result.is_writer = is_writer
+//   // result.is_auth = true
+//   //
+//   // const operation_data_info = await OperationDataService.getOperationDataByOperationSeq(DBMySQL, operation_seq)
+//   // if (operation_data_info && !operation_data_info.isEmpty()) {
+//   //   result.operation_data_info = operation_data_info
+//   //   result.operation_data_seq = operation_data_info.seq
+//   // }
+// }
 
 routes.get('/admin', Auth.isAuthenticated(Role.ADMIN), Wrap(async (req, res) => {
   req.accepts('application/json')
@@ -255,23 +258,23 @@ routes.get('/admin', Auth.isAuthenticated(Role.ADMIN), Wrap(async (req, res) => 
 routes.get('/:api_type/:api_key/view', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   req.accepts('application/json')
   const base_info = await getBaseInfo(req, true, false, false, true)
-  const output = await OperationService.getOperationDataView(base_info.operation_seq, base_info.group_seq)
-  output.add('is_link', base_info.is_link)
-  output.add('is_editor_link', base_info.is_editor_link)
-  output.add('is_download_link', base_info.is_download_link)
-  res.json(output)
-}))
-
-// 동영상 1개 정보 가져오기 by djyu
-routes.get('/:api_type/:api_key/view2', Wrap(async (req, res) => {
-  req.accepts('application/json')
-  // const base_info = await getBaseInfo(req, true, false, false, true)
   const output = await OperationService.getOperationDataView(req.params.api_key, 3)
   output.add('is_link', true)
   output.add('is_editor_link', true)
   output.add('is_download_link', true)
   res.json(output)
 }))
+
+// // 동영상 1개 정보 가져오기 by djyu
+// routes.get('/:api_type/:api_key/view2', Wrap(async (req, res) => {
+//   req.accepts('application/json')
+//   // const base_info = await getBaseInfo(req, true, false, false, true)
+//   const output = await OperationService.getOperationDataView(req.params.api_key, 3)
+//   output.add('is_link', true)
+//   output.add('is_editor_link', true)
+//   output.add('is_download_link', true)
+//   res.json(output)
+// }))
 
 routes.get('/:api_type/:api_key/view/file', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   req.accepts('application/json')
@@ -295,7 +298,13 @@ routes.get('/:api_type/:api_key/mode', Auth.isAuthenticated(Role.LOGIN_USER), Wr
 routes.delete('/:api_type/:api_key', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   req.accepts('application/json')
   const base_info = await getBaseInfo(req, true)
-  const result =await OperationService.updateStatusTrash(DBMySQL, base_info.group_seq,{ seq_list: [base_info.operation_seq] }, false, base_info.is_group_admin, base_info.member_seq)
+
+  let is_admin = false
+  // const is_admin = req.body.is_admin
+  if (base_info.token_info.getRole() === Role.ADMIN) {
+    is_admin = true
+  }
+  const result = await OperationService.updateStatusTrash(DBMySQL,{ seq_list: [base_info.operation_seq] }, false, is_admin, base_info.member_info.seq)
 
   const output = new StdObject()
   output.add('result', result)

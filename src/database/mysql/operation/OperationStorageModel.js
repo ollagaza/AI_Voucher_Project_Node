@@ -102,14 +102,16 @@ export default class OperationStorageModel extends MySQLModel {
     }
     await this.update({ seq: storage_seq }, update_params)
 
+    console.log('updateStorageSummary')
+    console.log(member_seq)
     const query = this.database
       .select(this.database.raw('SUM(operation_storage.total_file_size) AS used_storage_size'), this.database.raw('SUM(operation_storage.origin_video_count) AS video_count'))
       .from((builder) => {
         builder
           .select(['seq', 'member_seq'])
           .from('operation')
-          .where('status', 'Y')
-          .andWhere('member_seq', member_seq)
+          // .where('status', 'Y')
+          .where('member_seq', member_seq)
         builder.as('operation')
       })
       .innerJoin('operation_storage', 'operation_storage.operation_seq', 'operation.seq')

@@ -18,11 +18,11 @@ import MemberService from "../../service/member/MemberService";
 const routes = Router()
 
 routes.get('/', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  // console.log('operations')
   // console.log(req.query.is_admin)
-
   const { token_info, member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
-  const operation_info_page = await OperationService.getOperationListByRequest(DBMySQL, 3, member_seq, req, req.query.is_admin)
+  // console.log('operations')
+  // console.log(token_info.isAdmin());
+  const operation_info_page = await OperationService.getOperationListByRequest(DBMySQL, 3, member_seq, req, token_info.isAdmin())
   const output = new StdObject()
   output.adds(operation_info_page)
   res.json(output)
@@ -41,6 +41,7 @@ routes.get('/', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => 
 
 routes.get('/:operation_seq(\\d+)', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
   // const { token_info } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
+  const { token_info } = await OperationService.getBaseInfo(DBMySQL, req)
   const operation_seq = req.params.operation_seq
 
   const operation_info = await OperationService.getOperationInfo(DBMySQL, operation_seq, token_info, true, true)
@@ -56,6 +57,7 @@ routes.post('/', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) =>
 
   const member_info = await MemberService.getMemberInfo(DBMySQL, req.body.member_seq)
   // const operation_seq = req.params.operation_seq
+
   const output = await OperationService.createOperation(DBMySQL, member_info, req.body, null)
   res.json(output)
 }))
@@ -261,11 +263,15 @@ routes.post('/:operation_seq(\\d+)/request/analysis', Auth.isAuthenticated(Role.
 // }))
 
 routes.put('/trash', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
+  const { token_info, member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
   // const { group_seq, member_seq, is_group_admin } = await GroupService.checkGroupAuth(DBMySQL, req, true, true, true)
   req.accepts('application/json')
   const seq_list = req.body.seq_list
-  const is_admin = req.body.is_admin
+  let is_admin = false
+  // const is_admin = req.body.is_admin
+  if (token_info.getRole() === Role.ADMIN) {
+    is_admin = true
+  }
 
   // console.log('/trash')
   // console.log(is_admin)
@@ -280,10 +286,16 @@ routes.put('/trash', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res
 }))
 
 routes.delete('/trash', Auth.isAuthenticated(Role.LOGIN_USER), Wrap(async (req, res) => {
-  const { member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
+  const { token_info, member_seq } = await OperationService.getBaseInfo(DBMySQL, req)
   req.accepts('application/json')
   const seq_list = req.body.seq_list
-  const is_admin = req.body.is_admin
+  // const is_admin = req.body.is_admin
+  let is_admin = false
+  // const is_admin = req.body.is_admin
+  if (token_info.getRole() === Role.ADMIN) {
+    is_admin = true
+  }
+
   log.d(req, seq_list)
 
   const result = await OperationService.updateStatusTrash(DBMySQL, req.body, true, is_admin, member_seq)

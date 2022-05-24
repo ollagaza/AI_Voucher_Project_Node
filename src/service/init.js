@@ -42,7 +42,7 @@ export default {
     await ServiceConfig.init()
     // await Member.init()
     await initDirectories()
-    await SocketManager.init()
+    // await SocketManager.init()
     await MongoDataService.init()
     // SchedulerManager.init()
     if (ServiceConfig.isVacs() === false) {

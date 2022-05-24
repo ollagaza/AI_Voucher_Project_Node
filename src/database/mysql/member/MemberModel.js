@@ -217,7 +217,7 @@ export default class MemberModel extends MySQLModel {
     return result;
   }
 
-  getMemberList = async (options, search_keyword) => {
+  getMemberList = async (options, order_params = {}, search_keyword) => {
     const page = options.page
     const limit = options.limit
 
@@ -231,6 +231,39 @@ export default class MemberModel extends MySQLModel {
     // if (result && result.regist_date) {
     //   result.regist_date = Util.dateFormat(result.regist_date.getTime())
     // }
+    const order_by = { name: 'regist_date', direction: 'DESC' }
+    if (order_params.field) {
+      switch (order_params.field) {
+        case 'regist_date':
+          order_by.name = 'regist_date'
+          order_by.direction = order_params.type
+          break;
+        case 'user_id':
+          order_by.name = 'user_id'
+          order_by.direction = order_params.type
+          break;
+        case 'user_name':
+          order_by.name = 'user_name'
+          order_by.direction = order_params.type
+          break;
+        case 'used_admin':
+          order_by.name = 'used_admin'
+          order_by.direction = order_params.type
+          break;
+        case 'used':
+          order_by.name = 'used'
+          order_by.direction = order_params.type
+          break;
+        case 'storage_size':
+          order_by.name = 'storage_size'
+          order_by.direction = order_params.type
+          break;
+        default :
+          break;
+      }
+    }
+    oKnex.orderBy(order_by.name, order_by.direction)
+
     return this.queryPaginated(oKnex, limit, page)
     // return new MemberInfo(result, this.private_fields)
     // return new JsonWrapper(result, this.private_fields)
